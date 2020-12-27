@@ -5,9 +5,11 @@
 
 #include <nds.h>
 #include <stdio.h>
+#include "graphics_manager.h"
 
 int main(void) {
 	
+	configure_graphics_main();
     consoleDemoInit();
     printf("\nTemplate nds\n");
 
