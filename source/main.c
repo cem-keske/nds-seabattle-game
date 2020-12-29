@@ -10,8 +10,8 @@
 int main(void) {
 	
 	configure_graphics_main();
-    consoleDemoInit();
-    printf("\nTemplate nds\n");
+    //consoleDemoInit();
+    //printf("\nTemplate nds\n");
 
     while(1)
         swiWaitForVBlank();	

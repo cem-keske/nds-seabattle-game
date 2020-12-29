@@ -48,7 +48,8 @@ graphics_manager.o:  \
   /opt/devkitPro/libnds/include/nds/arm9/videoGL.h \
   /opt/devkitPro/libnds/include/nds/arm9/sprite.h \
   /opt/devkitPro/libnds/include/nds/system.h \
-  /opt/devkitPro/libnds/include/nds/arm9/decompress.h
+  /opt/devkitPro/libnds/include/nds/arm9/decompress.h \
+  /home/nds/files/workspace/Seabattle_project/source/battlefield.h
 
 /home/nds/files/workspace/Seabattle_project/source/graphics_manager.h:
 
@@ -147,3 +148,5 @@ graphics_manager.o:  \
 /opt/devkitPro/libnds/include/nds/system.h:
 
 /opt/devkitPro/libnds/include/nds/arm9/decompress.h:
+
+/home/nds/files/workspace/Seabattle_project/source/battlefield.h:

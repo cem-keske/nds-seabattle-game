@@ -47,7 +47,8 @@ main.o: /home/nds/files/workspace/Seabattle_project/source/main.c \
   /opt/devkitPro/libnds/include/nds/arm9/sprite.h \
   /opt/devkitPro/libnds/include/nds/system.h \
   /opt/devkitPro/libnds/include/nds/arm9/decompress.h \
-  /home/nds/files/workspace/Seabattle_project/source/graphics_manager.h
+  /home/nds/files/workspace/Seabattle_project/source/graphics_manager.h \
+  /home/nds/files/workspace/Seabattle_project/source/battlefield.h
 
 /opt/devkitPro/libnds/include/nds.h:
 
@@ -146,3 +147,5 @@ main.o: /home/nds/files/workspace/Seabattle_project/source/main.c \
 /opt/devkitPro/libnds/include/nds/arm9/decompress.h:
 
 /home/nds/files/workspace/Seabattle_project/source/graphics_manager.h:
+
+/home/nds/files/workspace/Seabattle_project/source/battlefield.h:
