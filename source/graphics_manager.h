@@ -22,4 +22,6 @@ void show_land(Land_status status, int x, int y);
 
 void tile_shower(u16 tile_index, u16* map, int grid_x, int grid_y);
 
+void tile_shower_2x2(u16 tile_2x2_index, u16* map, int grid_x, int grid_y);
+
 #endif /* GRAPHICS_MANAGER_H_ */
