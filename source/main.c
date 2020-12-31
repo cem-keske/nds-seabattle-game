@@ -7,32 +7,39 @@
 #include <stdio.h>
 #include "graphics_manager.h"
 #include "battlefield.h"
+#include "game.h"
+#include "wifi.h"
 
 int main(void) {
-	
+
+	consoleDemoInit();
+	connect_wifi();
+	send_pairing_packet();
+	wait_pairing_packet();
+	wait_start();
 
 	configure_graphics_main();//all empty
-	show_land(HIT, 9, 8);
-	show_land(HIT, 9, 9);
-	show_land(FULL,9,10);
-	show_land(FULL,9,11);
-	show_land(MISS, 10,11);
-	show_land(MISS, 10, 9);
+	configure_graphics_sub();//all empty
 
-	show_land(FULL,3,5);
-	show_land(FULL,4,5);
-	show_land(FULL,5,5);
-	show_land(FULL,6,5);
-	show_land(FULL,7,5);
+	//play_game();
 
-	show_land(MISS, 1,1);
-	show_land(MISS, 5,2);
-	show_land(MISS, 7,9);
+	Battlefield* field = create_battlefield(MAIN);
+	Battlefield* field2 = create_battlefield(SUB);
 
-	show_land(HIT, 6, 3);
-	show_land(HIT, 7, 3);
-	show_land(HIT, 8, 3);
+	Ship* big = create_ship(5,5,3,VERTICAL);
+	Ship* big2 = create_ship(6,7,7,HORIZONTAL);
 
+	add(big,field2);
+	add(big2,field);
+
+	fire(field, 5, 5);
+	fire(field, 3, 5);
+	fire(field, 3, 4);
+	fire(field, 3, 6);
+	fire(field, 3, 6);
+	fire(field, 6, 7);
+	fire(field, 7, 7);
+	fire(field, 9, 7);
 
 
 
@@ -41,4 +48,10 @@ int main(void) {
 
     while(1)
         swiWaitForVBlank();	
+
+    destroy_battlefield(field);
+    destroy_battlefield(field2);
+    destroy_ship(big2);
+    destroy_ship(big);
+
 }
