@@ -97,12 +97,12 @@ bool add(Ship* ship, Battlefield* field){
  * Shows a temporary ship on the battlefield. (not included in grid)
  */
 bool add_temp(Ship* ship, Battlefield* field){
-	printf("here \n");
+	//printf("here \n");
 	if(inside(ship) == false){
-		printf("not inside \n");
+		//printf("not inside \n");
 		return false;
 	}
-	printf("here \n");
+	//printf("here \n");
 	int i;
 	if(ship->orientation == HORIZONTAL){
 		for(i = ship->topleft_x; i < ship->topleft_x + ship->length; ++i){
@@ -153,7 +153,7 @@ bool valid(Ship* ship){
 bool inside(Ship* ship){
 	//check if the topleft index is valid
 		if(valid(ship) == false){
-			printf("Not valid\n");
+			//printf("Not valid\n");
 			return false;
 		}
 		//check bounds
@@ -169,7 +169,7 @@ bool inside(Ship* ship){
 
 /**
  * Returns true if the operation of adding the ship to the given index doesn't
- * create any conflict.
+ * create any conflict. Collisions included.
  */
 bool available(Ship* ship, Battlefield* field){
 	//check if the topleft index is valid

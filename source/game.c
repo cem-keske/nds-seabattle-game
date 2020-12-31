@@ -49,44 +49,71 @@ Battlefield * place_ships(){
 		ships[i] = create_ship(0,0,2*(i/2+1),VERTICAL);
 	}
 	//show all
+	unsigned char opponent_ships;
 	i = 0;
 	scanKeys();
 	for(i = 0 ; i<SHIP_COUNT; ++i){
+		printf("Place ship no: %i / %i \n\n", i+1, SHIP_COUNT);
 		add_temp(ships[i], field);
 		while(1){
 			scanKeys();
 			unsigned keys = keysDown();
 			if(keys & KEY_LEFT){
-				printf("<- pressed\n");
+				//printf("<- pressed\n");
 				if(move_temp(ships[i],field,LEFT) == false)
-					printf("Invalid move left\n");
+					printf("Invalid move left\n\n");
 			}
 			if(keys & KEY_DOWN){
-				printf("DOWN pressed\n");
+				//printf("DOWN pressed\n");
 				if(move_temp(ships[i],field,DOWN) == false)
-					printf("Invalid move down \n");
+					printf("Invalid move down \n\n");
 			}
 			if(keys & KEY_UP){
-				printf("UP pressed\n");
+				//printf("UP pressed\n");
 				if(move_temp(ships[i],field,UP) == false)
-					printf("Invalid move up\n");
+					printf("Invalid move up\n\n");
 			}
 			if(keys & KEY_RIGHT){
-				printf("-> pressed\n");
+				//printf("-> pressed\n");
 				if(move_temp(ships[i],field,RIGHT) == false)
-					printf("Invalid move right\n");
+					printf("Invalid move right\n\n");
 			}
 			if(keys & KEY_B){
-				printf("B pressed\n");
+				//printf("B pressed\n");
 				if(move_temp(ships[i],field,ROT) == false)
-					printf("Invalid move rotation\n");
+					printf("Invalid rotation \n\n");
 			}
+			if(keys & KEY_A){//validate move
+				if(available(ships[i],field) == false){
+					printf("Cant place the ship here! \n\n");
+				} else {//place available
+					remove_temp(ships[i], field);
+					add(ships[i], field);
+					send_ship_placed(i + 1);
+					break; //place the next ship
+				}
+
+			}
+			opponent_ships = listen_placed_ships();
+			if(opponent_ships != 0)
+				printf("Opponent placed ship %d/%i \n\n", opponent_ships, SHIP_COUNT);
+			if(opponent_ships == SHIP_COUNT)
+				printf("Your opponent finished \n placing their ships. \n Hurry up! \n \n");
 			swiWaitForVBlank();
 		}
 		/*
 			for(i = 0; i < SHIP_COUNT; ++i){
 				add_temp(ships[i], field);
 		}*/
+	}
+	printf("You placed your ships... \n\nPlease wait for your \nopponent to place their \nships... \n\n");
+	while(1){
+		opponent_ships = listen_placed_ships();
+		if(opponent_ships != 0)
+			printf("Opponent placed ship %d/%i \n\n", opponent_ships, SHIP_COUNT);
+		if(opponent_ships == SHIP_COUNT)
+			break;
+		swiWaitForVBlank();
 	}
 	return field;
 }

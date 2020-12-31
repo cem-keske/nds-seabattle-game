@@ -13,11 +13,10 @@
 int main(void) {
 
 	consoleDemoInit();
-	//connect_wifi();
-	//send_pairing_packet();
-	//wait_pairing_packet();
-	//wait_start();
-
+	connect_wifi();
+	send_pairing_packet();
+	wait_pairing_packet();
+	wait_start();
 	configure_graphics_main();//all empty
 	//configure_graphics_sub();//all empty
 	place_ships();

@@ -4,6 +4,7 @@
 const char PAIRING_REQ = 0x01;
 const char PAIRING_ACK = 0x02;
 const char READY = 0x03;
+const char SHIP_PLACED = 0x04;
 
 bool connect_wifi(){
 	if(initWiFi() && openSocket())
@@ -57,5 +58,29 @@ bool ready_packet_received(){
 		if(msg[0] == READY)
 			return true;
 	return false;
+}
+
+/**
+ * Sends a packet informing the opponent that a ship was placed.
+ */
+void send_ship_placed(unsigned char ship_nbr){
+	char msg[2];
+	msg[0] = SHIP_PLACED;
+	msg[1] = ship_nbr;
+	sendData(msg,2);
+}
+
+
+/**
+ * Receive a packet from the opponent informing that a ship was placed.
+ * \return The number of the ship placed, 0 otherwise.
+ */
+unsigned char listen_placed_ships(){
+	unsigned char placed_ship_nbr = 0;
+	char msg[2];
+	if(receiveData(msg, 2) > 0)
+		if(msg[0] == SHIP_PLACED)
+			placed_ship_nbr = (unsigned char)msg[1];
+	return placed_ship_nbr;
 }
 

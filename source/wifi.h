@@ -37,4 +37,16 @@ void send_ready_packet();
  */
 bool ready_packet_received();
 
+/**
+ * Sends a packet informing the opponent that a ship was placed.
+ */
+void send_ship_placed(unsigned char ship_nbr);
+
+
+/**
+ * Receive a packet from the opponent informing that a ship was placed.
+ * \return The number of the ship placed, 0 otherwise.
+ */
+unsigned char listen_placed_ships();
+
 #endif /* WIFI_H_ */
