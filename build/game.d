@@ -53,7 +53,10 @@ game.o: /home/nds/files/workspace/Seabattle_project/source/game.c \
   /opt/devkitPro/libnds/include/dswifi9.h \
   /opt/devkitPro/libnds/include/dswifi_version.h \
   /opt/devkitPro/libnds/include/netinet/in.h \
-  /opt/devkitPro/libnds/include/sys/socket.h
+  /opt/devkitPro/libnds/include/sys/socket.h \
+  /home/nds/files/workspace/Seabattle_project/source/ship.h \
+  /home/nds/files/workspace/Seabattle_project/source/battlefield.h \
+  /home/nds/files/workspace/Seabattle_project/source/graphics_manager.h
 
 /home/nds/files/workspace/Seabattle_project/source/game.h:
 
@@ -164,3 +167,9 @@ game.o: /home/nds/files/workspace/Seabattle_project/source/game.c \
 /opt/devkitPro/libnds/include/netinet/in.h:
 
 /opt/devkitPro/libnds/include/sys/socket.h:
+
+/home/nds/files/workspace/Seabattle_project/source/ship.h:
+
+/home/nds/files/workspace/Seabattle_project/source/battlefield.h:
+
+/home/nds/files/workspace/Seabattle_project/source/graphics_manager.h:

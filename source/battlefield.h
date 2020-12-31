@@ -54,10 +54,28 @@ bool fire_valid(Battlefield* battlefield ,int x, int y);
 bool add(Ship* ship, Battlefield* field);
 
 /**
+ * Shows a temporary ship on the battlefield. (not included in grid)
+ */
+bool add_temp(Ship* ship, Battlefield* field);
+
+/**
+ * Removes the temporary ship on the battlefield. (not included in grid)
+ */
+bool remove_temp(Ship* ship, Battlefield* field);
+
+/**
  * Returns true if the operation of adding the ship to the given index doesn't
  * create any conflict.
  */
 bool available(Ship* ship, Battlefield* field);
 
+
+bool valid(Ship* ship);
+
+/**
+ * Returns true if the operation of adding the ship to the given index doesn't
+ * exceed bounds of the map.
+ */
+bool inside(Ship* ship);
 
 #endif /* BATTLEFIELD_H_ */

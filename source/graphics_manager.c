@@ -11,7 +11,7 @@
 #define HITSIP_TILES_IDX	TILE_END_IDX
 
 
-typedef enum {EMPTYTILE_IDX = 0, EMPTYTILE2_IDX,  FULLTILE_IDX, MISSTILE_IDX, TILE_END_IDX} Tile_indexes ;
+typedef enum {EMPTYTILE_IDX = 0, EMPTYTILE2_IDX,  FULLTILE_IDX, MISSTILE_IDX, TRANSPARENT_TILE_IDX, TILE_END_IDX} Tile_indexes ;
 typedef enum {BLUE1_IDX = 51, BLUE2_IDX, BLUE3_IDX, BLUE4_IDX, BLUE5_IDX, RED_IDX, GREEN_IDX, WHITE_IDX, BLACK_IDX, CYAN_IDX, CYAN2_IDX}Color_indexes ;
 
 
@@ -57,11 +57,23 @@ u8 full_tile[64] = {
 		 BLACK_IDX,  BLUE5_IDX,  BLUE1_IDX,  BLUE5_IDX,  BLUE2_IDX,  BLUE3_IDX,  BLUE4_IDX,  WHITE_IDX,
 };
 
+u8 transparent_tile[64] = {
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0
+};
+
 
 
 void configure_graphics_main(){
-	REG_DISPCNT = MODE_5_2D | DISPLAY_BG0_ACTIVE;
-	BGCTRL[0] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(1) | BG_32x32;
+	REG_DISPCNT = MODE_5_2D | DISPLAY_BG0_ACTIVE | DISPLAY_BG1_ACTIVE;
+	BGCTRL[0] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(1) | BG_32x32 | BG_PRIORITY_1;
+	BGCTRL[1] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(2) | BG_32x32 | BG_PRIORITY_0;
 	VRAM_A_CR = VRAM_A_MAIN_BG | VRAM_ENABLE;
 
 	//copy grit palette
@@ -91,6 +103,16 @@ void configure_graphics_main(){
 	for(i = 0; i<12; i = i + 1)
 				for(j = 0; j < 16; j = j + 1)
 					tile_shower(EMPTYTILE_IDX, BG_MAP_RAM(1),j,i);
+
+	//init the upper background
+	init_toplevel();
+}
+
+void init_toplevel(){
+	int i,j;
+		for(i = 0; i<12; i = i + 1)
+					for(j = 0; j < 16; j = j + 1)
+						tile_shower(TRANSPARENT_TILE_IDX, BG_MAP_RAM(2),j,i);
 }
 
 void show_land(Land_status status, int x, int y){
@@ -101,6 +123,17 @@ void show_land(Land_status status, int x, int y){
 	case EMPTY:	tile_shower(EMPTYTILE_IDX, BG_MAP_RAM(1),x,y); break;
 	default: break;
 	}
+}
+
+void show_land_toplevel(Land_status status, int x, int y){
+	switch(status){
+		case HIT: 	tile_shower_2x2(HITSIP_TILES_IDX, BG_MAP_RAM(2),x,y); break;
+		case MISS:	tile_shower(MISSTILE_IDX, BG_MAP_RAM(2),x,y); break;
+		case FULL:	tile_shower(FULLTILE_IDX, BG_MAP_RAM(2),x,y); break;
+		case EMPTY:	tile_shower(EMPTYTILE_IDX, BG_MAP_RAM(2),x,y); break;
+		case TRANSPARENT: tile_shower(TRANSPARENT_TILE_IDX,BG_MAP_RAM(2),x,y);
+		default: break;
+		}
 }
 
 

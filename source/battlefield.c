@@ -1,6 +1,7 @@
 #include "battlefield.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #define FIELD_WIDTH		16
 #define FIELD_HEIGHT	12
@@ -93,15 +94,88 @@ bool add(Ship* ship, Battlefield* field){
 }
 
 /**
+ * Shows a temporary ship on the battlefield. (not included in grid)
+ */
+bool add_temp(Ship* ship, Battlefield* field){
+	printf("here \n");
+	if(inside(ship) == false){
+		printf("not inside \n");
+		return false;
+	}
+	printf("here \n");
+	int i;
+	if(ship->orientation == HORIZONTAL){
+		for(i = ship->topleft_x; i < ship->topleft_x + ship->length; ++i){
+			if(field->display == MAIN)
+				show_land_toplevel(FULL, i, ship->topleft_y);
+		}
+	}else if(ship->orientation == VERTICAL){
+		for(i = ship->topleft_y; i < ship->topleft_y + ship->length; ++i){
+			if(field->display == MAIN)
+				show_land_toplevel(FULL, ship->topleft_x, i);
+		}
+	}
+	return true;
+}
+
+/**
+ * Removes the temporary ship on the battlefield. (not included in grid)
+ */
+bool remove_temp(Ship* ship, Battlefield* field){
+	if(valid(ship) == false)
+			return false;
+		int i;
+		if(ship->orientation == HORIZONTAL){
+			for(i = ship->topleft_x; i < ship->topleft_x + ship->length; ++i){
+				if(field->display == MAIN)
+					show_land_toplevel(TRANSPARENT, i, ship->topleft_y);
+			}
+		}else if(ship->orientation == VERTICAL){
+			for(i = ship->topleft_y; i < ship->topleft_y + ship->length; ++i){
+				if(field->display == MAIN)
+					show_land_toplevel(TRANSPARENT, ship->topleft_x, i);
+			}
+		}
+		return true;
+}
+
+/**
+ * Returns true if the topleft index is valid
+ */
+bool valid(Ship* ship){
+	//check if the topleft index is valid
+		if(ship->topleft_x < 0 || ship->topleft_x >= FIELD_WIDTH ||
+				ship->topleft_y < 0 || ship->topleft_y >= FIELD_HEIGHT)
+			return false;
+		return true;
+}
+
+bool inside(Ship* ship){
+	//check if the topleft index is valid
+		if(valid(ship) == false){
+			printf("Not valid\n");
+			return false;
+		}
+		//check bounds
+		if(ship->orientation == HORIZONTAL){
+			if(ship->topleft_x + ship->length > FIELD_WIDTH)
+				return false;
+		}else if(ship->orientation == VERTICAL){
+			if(ship->topleft_y + ship->length > FIELD_HEIGHT)
+				return false;
+		}
+		return true;
+}
+
+/**
  * Returns true if the operation of adding the ship to the given index doesn't
  * create any conflict.
  */
 bool available(Ship* ship, Battlefield* field){
 	//check if the topleft index is valid
-	if(ship->topleft_x < 0 || ship->topleft_x >= FIELD_WIDTH ||
-			ship->topleft_y < 0 || ship->topleft_y >= FIELD_HEIGHT)
+	if(valid(ship) == false){
 		return false;
-
+	}
 	//check boundaries and other things
 	int i;
 	if(ship->orientation == HORIZONTAL){
@@ -111,7 +185,6 @@ bool available(Ship* ship, Battlefield* field){
 			if(field->battle_grid[ship->topleft_y * FIELD_WIDTH + i] == FULL)
 				return false;
 		}
-
 	}else if(ship->orientation == VERTICAL){
 			if(ship->topleft_y + ship->length > FIELD_HEIGHT)
 				return false;

@@ -10,7 +10,7 @@
 #include <nds.h>
 
 typedef enum {SUB, MAIN} Screen;
-typedef enum {EMPTY, FULL, HIT, MISS} Land_status;
+typedef enum {EMPTY, FULL, HIT, MISS, TRANSPARENT} Land_status;
 
 
 
@@ -25,6 +25,9 @@ void tile_shower(u16 tile_index, u16* map, int grid_x, int grid_y);
 
 void tile_shower_2x2(u16 tile_2x2_index, u16* map, int grid_x, int grid_y);
 
+void init_toplevel();
+
+void show_land_toplevel(Land_status status, int x, int y);
 
 void configure_graphics_sub();
 
