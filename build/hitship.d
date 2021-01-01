@@ -1,1 +1,0 @@
-hitship.o: hitship.s

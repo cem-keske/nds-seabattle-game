@@ -10,6 +10,7 @@
 #include "game.h"
 #include "wifi.h"
 
+
 int main(void) {
 
 	consoleDemoInit();
@@ -18,20 +19,30 @@ int main(void) {
 	wait_pairing_packet();
 	wait_start();
 	configure_graphics_main();//all empty
-	//configure_graphics_sub();//all empty
 	place_ships();
-	//play_game();
-	/*
-	Battlefield* field = create_battlefield(MAIN);
-	//Battlefield* field2 = create_battlefield(SUB);
+	configure_graphics_sub();//all empty
 
-	//Ship* big = create_ship(5,5,3,VERTICAL);
+
+	//place_ships();
+	//play_game();
+
+	Battlefield* field2 = create_battlefield(MAIN);
+	Battlefield* field = create_battlefield(SUB);
+
+	Ship* big = create_ship(5,5,3,VERTICAL);
 	Ship* big2 = create_ship(9,7,7,HORIZONTAL);
 	Ship* big3 = create_ship(11,5,6,VERTICAL);
-	//add(big,field2);
 
-	add_temp(big3, field);
+	add(big,field2);
+	add_temp(big2,field2);
+	add(big3, field);
+	show_missle_sub(11,5);
+	//remove_missle_sub(5,5);
+	//fire(field, 11, 5);
+
+	//remove_missle_sub(5,5);
 	//remove_temp(big3, field);
+	/*
 	move_temp(big3,field, LEFT);
 	move_temp(big3,field, DOWN);
 	move_temp(big3,field, DOWN);
@@ -57,9 +68,9 @@ int main(void) {
 	move_temp(big3,field, DOWN);
 	move_temp(big3,field, DOWN);
 	move_temp(big3,field,ROT);
-
+	 */
 	//remove_temp(big2, field);
-
+	/*
 	fire(field, 5, 5);
 	fire(field, 3, 5);
 	fire(field, 3, 4);
@@ -68,9 +79,9 @@ int main(void) {
 	fire(field, 6, 7);
 	fire(field, 7, 7);
 	fire(field, 12, 7);
-
-    printf("\nTemplate nds\n");
 	*/
+    //printf("\nTemplate nds\n");
+
     while(1)
         swiWaitForVBlank();	
 

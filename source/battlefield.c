@@ -6,6 +6,7 @@
 #define FIELD_WIDTH		16
 #define FIELD_HEIGHT	12
 
+
 /**
  * Creates an empty battlefield.
  */

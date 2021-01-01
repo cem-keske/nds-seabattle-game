@@ -12,14 +12,13 @@ bool connect_wifi(){
 	return true;
 }
 
-
 /**
  * Sends a pairing packet
  */
 void send_pairing_packet(){
 	char msg[1] = {PAIRING_REQ};
 	sendData(msg,1);
-	printf("Sent a pairing packet! \n\n");
+	printf("Searching for another player! \n\n");
 }
 
 /**
@@ -27,21 +26,20 @@ void send_pairing_packet(){
  * and responds with a pairing packet.
  */
 void wait_pairing_packet(){
-	printf("Waiting for pairing packet! \n\n");
+	printf("Waiting for another player to join! \n\n");
 	while(1){
 		char msg[1];
 
 		if(receiveData(msg, 1) > 0){
 			//a message is received
 			if(msg[0] == PAIRING_REQ){
-				printf("Received a pairing request! \n\n");
+				printf("A new player has joined the network! \n\n");
 				msg[0] = PAIRING_ACK;
 				sendData(msg, 1);
-				printf("Sent pairing ACK! \n\n");
 				printf("Pairing successful! \n\n");
 				break;
 			} else if(msg[0] == PAIRING_ACK) {
-				printf("Received pairing ACK! \n\n Pairing succesful. \n\n");
+				printf("Connected to another player! \n\n Pairing succesful. \n\n");
 				break;
 			}
 		}

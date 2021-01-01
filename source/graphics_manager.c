@@ -1,18 +1,25 @@
 #include "graphics_manager.h"
 #include "string.h"
-#include "hitship.h"
+#include "fire_missle.h"
+#include <stdio.h>
 
-#define EMPTYTILE_RAM_POS  	EMPTYTILE_IDX * 32
-#define FULLTILE_RAM_POS  	FULLTILE_IDX * 32
-#define MISSTILE_RAM_POS  	MISSTILE_IDX * 32
-#define EMPTYTILE2_RAM_POS 	EMPTYTILE2_IDX*32
-#define TILES_END_RAM_POS 	TILE_END_IDX*32
-#define HITSIP_TILES_RAM_POS 	TILES_END_RAM_POS
-#define HITSIP_TILES_IDX	TILE_END_IDX
+#define EMPTYTILE_RAM_POS  			EMPTYTILE_IDX * 32
+#define FULLTILE_RAM_POS  			FULLTILE_IDX * 32
+#define MISSTILE_RAM_POS  			MISSTILE_IDX * 32
+#define EMPTYTILE2_RAM_POS 			EMPTYTILE2_IDX*32
+#define TRANSPARENT_TILE_RAM_POS	TRANSPARENT_TILE_IDX*32
+#define TILES_END_RAM_POS 			TILE_END_IDX*32
+#define HITSHIP_TILES_RAM_POS 		TILES_END_RAM_POS
+#define HITSHIP_TILES_IDX			TILE_END_IDX
+#define MISSLE_TILES_RAM_POS		MISSLE_TILES_IDX*32
+#define MISSLE_TILES_IDX			(TILE_END_IDX+4)
 
+const unsigned int* missle_tiles  = &(fire_missleTiles[64]);
+const unsigned int* hitship_tiles = &(fire_missleTiles[0]);
 
-typedef enum {EMPTYTILE_IDX = 0, EMPTYTILE2_IDX,  FULLTILE_IDX, MISSTILE_IDX, TRANSPARENT_TILE_IDX, TILE_END_IDX} Tile_indexes ;
-typedef enum {BLUE1_IDX = 51, BLUE2_IDX, BLUE3_IDX, BLUE4_IDX, BLUE5_IDX, RED_IDX, GREEN_IDX, WHITE_IDX, BLACK_IDX, CYAN_IDX, CYAN2_IDX}Color_indexes ;
+typedef enum {EMPTYTILE_IDX = 0,TRANSPARENT_TILE_IDX , EMPTYTILE2_IDX,  FULLTILE_IDX, MISSTILE_IDX,  TILE_END_IDX} Tile_indexes ;
+typedef enum {BLUE1_IDX = 80, BLUE2_IDX, BLUE3_IDX, BLUE4_IDX, BLUE5_IDX, RED_IDX, GREEN_IDX, WHITE_IDX, BLACK_IDX, CYAN_IDX, CYAN2_IDX}Color_indexes ;
+
 
 
 u8 empty_tile[64] = {
@@ -58,26 +65,42 @@ u8 full_tile[64] = {
 };
 
 u8 transparent_tile[64] = {
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0
+		BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,
+		BLACK_IDX,0,0,0,0,0,0,0,
+		BLACK_IDX,0,0,0,0,0,0,0,
+		BLACK_IDX,0,0,0,0,0,0,0,
+		BLACK_IDX,0,0,0,0,0,0,0,
+		BLACK_IDX,0,0,0,0,0,0,0,
+		BLACK_IDX,0,0,0,0,0,0,0,
+		BLACK_IDX,0,0,0,0,0,0,0,
+
 };
+
+void blinking_timer0_ISR(){
+	REG_DISPCNT = REG_DISPCNT ^ DISPLAY_BG0_ACTIVE;
+}
+
+void blinking_timer1_ISR(){
+	REG_DISPCNT_SUB  = REG_DISPCNT_SUB ^ DISPLAY_BG0_ACTIVE;
+}
 
 
 
 void configure_graphics_main(){
 	REG_DISPCNT = MODE_5_2D | DISPLAY_BG0_ACTIVE | DISPLAY_BG1_ACTIVE;
-	BGCTRL[0] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(1) | BG_32x32 | BG_PRIORITY_1;
-	BGCTRL[1] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(2) | BG_32x32 | BG_PRIORITY_0;
+	BGCTRL[1] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(1) | BG_32x32;
+	BGCTRL[0] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(2) | BG_32x32;
 	VRAM_A_CR = VRAM_A_MAIN_BG | VRAM_ENABLE;
 
+
+	TIMER0_DATA = TIMER_FREQ_1024(2);
+	TIMER0_CR = TIMER_DIV_1024 | TIMER_ENABLE | TIMER_IRQ_REQ ;
+
+	irqSet(IRQ_TIMER0, &blinking_timer0_ISR);
+	irqEnable(IRQ_TIMER0);
+
 	//copy grit palette
-	memcpy(BG_PALETTE, hitshipPal, hitshipPalLen);
+	memcpy(BG_PALETTE, fire_misslePal, fire_misslePalLen);
 
 	//add additional colors
 	BG_PALETTE[BLUE1_IDX] = ARGB16(1,0,0,13);
@@ -94,9 +117,11 @@ void configure_graphics_main(){
 
 
 	memcpy(&BG_TILE_RAM(0)[EMPTYTILE_RAM_POS], empty_tile, 64);
-	memcpy(&BG_TILE_RAM(0)[HITSIP_TILES_RAM_POS], hitshipTiles, 64*4); //copy 4 tiles
+	memcpy(&BG_TILE_RAM(0)[HITSHIP_TILES_RAM_POS], hitship_tiles, 64*4); //copy 4 tiles
 	memcpy(&BG_TILE_RAM(0)[MISSTILE_RAM_POS], miss_tile, 64);
 	memcpy(&BG_TILE_RAM(0)[FULLTILE_RAM_POS], full_tile, 64);
+	memcpy(&BG_TILE_RAM(0)[TRANSPARENT_TILE_RAM_POS], transparent_tile, 64);
+
 
 	//initalize an empty game grid
 	int i,j;
@@ -117,7 +142,7 @@ void init_toplevel(){
 
 void show_land(Land_status status, int x, int y){
 	switch(status){
-	case HIT: 	tile_shower_2x2(HITSIP_TILES_IDX, BG_MAP_RAM(1),x,y); break;
+	case HIT: 	tile_shower_2x2(HITSHIP_TILES_IDX, BG_MAP_RAM(1),x,y); break;
 	case MISS:	tile_shower(MISSTILE_IDX, BG_MAP_RAM(1),x,y); break;
 	case FULL:	tile_shower(FULLTILE_IDX, BG_MAP_RAM(1),x,y); break;
 	case EMPTY:	tile_shower(EMPTYTILE_IDX, BG_MAP_RAM(1),x,y); break;
@@ -127,7 +152,7 @@ void show_land(Land_status status, int x, int y){
 
 void show_land_toplevel(Land_status status, int x, int y){
 	switch(status){
-		case HIT: 	tile_shower_2x2(HITSIP_TILES_IDX, BG_MAP_RAM(2),x,y); break;
+		case HIT: 	tile_shower_2x2(HITSHIP_TILES_IDX, BG_MAP_RAM(2),x,y); break;
 		case MISS:	tile_shower(MISSTILE_IDX, BG_MAP_RAM(2),x,y); break;
 		case FULL:	tile_shower(FULLTILE_IDX, BG_MAP_RAM(2),x,y); break;
 		case EMPTY:	tile_shower(EMPTYTILE_IDX, BG_MAP_RAM(2),x,y); break;
@@ -138,12 +163,21 @@ void show_land_toplevel(Land_status status, int x, int y){
 
 
 void configure_graphics_sub(){
-	REG_DISPCNT_SUB = MODE_5_2D | DISPLAY_BG0_ACTIVE;
-	BGCTRL_SUB[0] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(1) | BG_32x32;
+
+	REG_DISPCNT_SUB = MODE_0_2D | DISPLAY_BG0_ACTIVE | DISPLAY_BG1_ACTIVE;
+	BGCTRL_SUB[0] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(2) | BG_32x32;
+	BGCTRL_SUB[1] = BG_TILE_BASE(0) | BG_COLOR_256 | BG_MAP_BASE(1) | BG_32x32;
 	VRAM_C_CR = VRAM_C_SUB_BG | VRAM_ENABLE;
 
+
+	TIMER1_DATA = TIMER_FREQ_1024(2);
+	TIMER1_CR = TIMER_DIV_1024 | TIMER_ENABLE | TIMER_IRQ_REQ ;
+
+	irqSet(IRQ_TIMER1, &blinking_timer1_ISR);
+	irqEnable(IRQ_TIMER1);
+
 	//copy grit palette
-	memcpy(BG_PALETTE_SUB, hitshipPal, hitshipPalLen);
+	memcpy(BG_PALETTE_SUB, fire_misslePal, fire_misslePalLen);
 
 	//add additional colors
 	BG_PALETTE_SUB[BLUE1_IDX] = ARGB16(1,0,0,13);
@@ -160,20 +194,24 @@ void configure_graphics_sub(){
 
 
 	memcpy(&BG_TILE_RAM_SUB(0)[EMPTYTILE_RAM_POS], empty_tile, 64);
-	memcpy(&BG_TILE_RAM_SUB(0)[HITSIP_TILES_RAM_POS], hitshipTiles, 64*4); //copy 4 tiles
+	memcpy(&BG_TILE_RAM_SUB(0)[HITSHIP_TILES_RAM_POS], hitship_tiles, 64*4); //copy 4 tiles
+	memcpy(&BG_TILE_RAM_SUB(0)[MISSLE_TILES_RAM_POS], missle_tiles, 64*4); //copy 4 tiles
 	memcpy(&BG_TILE_RAM_SUB(0)[MISSTILE_RAM_POS], miss_tile, 64);
 	memcpy(&BG_TILE_RAM_SUB(0)[FULLTILE_RAM_POS], full_tile, 64);
+	memcpy(&BG_TILE_RAM_SUB(0)[TRANSPARENT_TILE_RAM_POS], transparent_tile, 64);
 
-	//initalize an empty game grid
 	int i,j;
-	for(i = 0; i<12; i = i + 1)
-				for(j = 0; j < 16; j = j + 1)
-					tile_shower(EMPTYTILE_IDX, BG_MAP_RAM_SUB(1),j,i);
+	for(j=0;j<16;++j){
+		for(i = 0; i<12; ++i){
+			tile_shower(EMPTYTILE_IDX, BG_MAP_RAM_SUB(1),j,i);
+		    tile_shower(TRANSPARENT_TILE_IDX, BG_MAP_RAM_SUB(2),j,i);
+		}
+	}
 }
 
 void show_land_sub(Land_status status, int x, int y){
 	switch(status){
-	case HIT: 	tile_shower_2x2(HITSIP_TILES_IDX, BG_MAP_RAM_SUB(1),x,y); break;
+	case HIT: 	tile_shower_2x2(HITSHIP_TILES_IDX, BG_MAP_RAM_SUB(1),x,y); break;
 	case MISS:	tile_shower(MISSTILE_IDX, BG_MAP_RAM_SUB(1),x,y); break;
 	case FULL:	tile_shower(FULLTILE_IDX, BG_MAP_RAM_SUB(1),x,y); break;
 	case EMPTY:	tile_shower(EMPTYTILE_IDX, BG_MAP_RAM_SUB(1),x,y); break;
@@ -181,6 +219,13 @@ void show_land_sub(Land_status status, int x, int y){
 	}
 }
 
+void show_missle_sub(int x, int y){
+	tile_shower_2x2(MISSLE_TILES_IDX, BG_MAP_RAM_SUB(2),x,y);
+}
+
+void remove_missle_sub(int x, int y){
+	tile_shower(TRANSPARENT_TILE_IDX, BG_MAP_RAM_SUB(2),x,y);
+}
 
 
 const u16 V_SYM_MASK = 1<<11;

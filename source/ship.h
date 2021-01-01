@@ -8,6 +8,7 @@
 #ifndef SHIP_H_
 #define SHIP_H_
 
+
 typedef enum {HORIZONTAL, VERTICAL} Orientation;
 
 typedef struct{
