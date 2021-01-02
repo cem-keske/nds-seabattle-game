@@ -26,6 +26,11 @@ typedef struct{
 Battlefield* create_battlefield(Screen display);
 
 /**
+ * Set the given index (x,y) to the given status and show it on the map
+ */
+void set(Land_status status, int x, int y, Battlefield* field);
+
+/**
  * C-type struct destructor, frees up the memory
  */
 void destroy_battlefield(Battlefield* battlefield);
@@ -45,7 +50,12 @@ Land_status fire(Battlefield* battlefield ,int x, int y);
 /**
  * Returns true if the index has NOT previously been shot.
  */
-bool fire_valid(Battlefield* battlefield ,int x, int y);
+bool fire_available(Battlefield* battlefield ,int x, int y);
+
+/**
+ * Returns true if the given index is inside the grid.
+ */
+bool missle_pos_inside(int x, int y);
 
 /**
  * Adds the ship to the battlefield and shows it.

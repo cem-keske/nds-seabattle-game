@@ -51,12 +51,7 @@ main.o: /home/nds/files/workspace/Seabattle_project/source/main.c \
   /home/nds/files/workspace/Seabattle_project/source/battlefield.h \
   /home/nds/files/workspace/Seabattle_project/source/ship.h \
   /home/nds/files/workspace/Seabattle_project/source/game.h \
-  /home/nds/files/workspace/Seabattle_project/source/wifi.h \
-  /home/nds/files/workspace/Seabattle_project/source/WiFi_minilib.h \
-  /opt/devkitPro/libnds/include/dswifi9.h \
-  /opt/devkitPro/libnds/include/dswifi_version.h \
-  /opt/devkitPro/libnds/include/netinet/in.h \
-  /opt/devkitPro/libnds/include/sys/socket.h
+  /home/nds/files/workspace/Seabattle_project/source/wifi.h
 
 /opt/devkitPro/libnds/include/nds.h:
 
@@ -163,13 +158,3 @@ main.o: /home/nds/files/workspace/Seabattle_project/source/main.c \
 /home/nds/files/workspace/Seabattle_project/source/game.h:
 
 /home/nds/files/workspace/Seabattle_project/source/wifi.h:
-
-/home/nds/files/workspace/Seabattle_project/source/WiFi_minilib.h:
-
-/opt/devkitPro/libnds/include/dswifi9.h:
-
-/opt/devkitPro/libnds/include/dswifi_version.h:
-
-/opt/devkitPro/libnds/include/netinet/in.h:
-
-/opt/devkitPro/libnds/include/sys/socket.h:

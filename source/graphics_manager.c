@@ -93,7 +93,7 @@ void configure_graphics_main(){
 	VRAM_A_CR = VRAM_A_MAIN_BG | VRAM_ENABLE;
 
 
-	TIMER0_DATA = TIMER_FREQ_1024(2);
+	TIMER0_DATA = TIMER_FREQ_1024(4);
 	TIMER0_CR = TIMER_DIV_1024 | TIMER_ENABLE | TIMER_IRQ_REQ ;
 
 	irqSet(IRQ_TIMER0, &blinking_timer0_ISR);
@@ -170,7 +170,7 @@ void configure_graphics_sub(){
 	VRAM_C_CR = VRAM_C_SUB_BG | VRAM_ENABLE;
 
 
-	TIMER1_DATA = TIMER_FREQ_1024(2);
+	TIMER1_DATA = TIMER_FREQ_1024(4);
 	TIMER1_CR = TIMER_DIV_1024 | TIMER_ENABLE | TIMER_IRQ_REQ ;
 
 	irqSet(IRQ_TIMER1, &blinking_timer1_ISR);

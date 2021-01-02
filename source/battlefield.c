@@ -14,6 +14,10 @@ Battlefield* create_battlefield(Screen display){
 	Battlefield* f = malloc(sizeof(Battlefield));
 	f->battle_grid = malloc(sizeof(Land_status) * FIELD_WIDTH * FIELD_HEIGHT);
 	f->display = display;
+	int i;
+	for(i = 0; i < FIELD_WIDTH * FIELD_HEIGHT; ++i){
+		f->battle_grid[i] = EMPTY;
+	}
 	return f;
 }
 
@@ -52,13 +56,30 @@ Land_status fire(Battlefield* battlefield ,int x, int y){
 }
 
 /**
+ * Set the given index (x,y) to the given status and show it on the map
+ */
+void set(Land_status status, int x, int y, Battlefield* field){
+	field->battle_grid[y*FIELD_WIDTH + x] = status;
+	if(field->display == SUB)
+			show_land_sub(status,x,y);
+	else if(field->display == MAIN)
+			show_land(status,x,y);
+}
+
+/**
  * Returns true if the index has NOT previously been shot.
  */
-bool fire_valid(Battlefield* battlefield ,int x, int y){
+bool fire_available(Battlefield* battlefield, int x, int y){
 	if(battlefield->battle_grid[y*FIELD_WIDTH + x] == FULL ||
 			battlefield->battle_grid[y*FIELD_WIDTH + x] == EMPTY)
 			return true;
 	return false;
+}
+
+bool missle_pos_inside(int x, int y){
+	if(x < 0 || x >= FIELD_WIDTH || y < 0 || y >= FIELD_HEIGHT)
+		return false;
+	return true;
 }
 
 /**
@@ -195,6 +216,5 @@ bool available(Ship* ship, Battlefield* field){
 			}
 		}
 	return true;
-
 }
 

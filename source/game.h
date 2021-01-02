@@ -15,12 +15,36 @@
 
 typedef enum {LEFT, RIGHT, UP, DOWN, ROT} Directions;
 
+/**
+ * Initialize the game parameters and connect to Wifi.
+ */
 void init_game();
 
-void play_game();
+/**
+ * Finds a pair on the network, this function blocks
+ * the execution until an opponent is found.
+ */
+void find_pair();
 
+/**
+ * The main algorithm of the game
+ * Returns the opponent field
+ */
+void play_game(Battlefield* home);
+
+/**
+ * Wait for both players to get ready(press start). This function blocks
+ * the execution until both players press start.
+ */
 void wait_start();
 
+/**
+ * Asks the user to place ship on the home fields,
+ * receives packets from the opponent indicating the opponent
+ * ships were placed.
+ * Sets game_starter boolean accordingly.
+ * (The first player to place their ship starts the game.)
+ */
 Battlefield* place_ships();
 
 /**

@@ -12,23 +12,42 @@
 
 
 int main(void) {
-
-	consoleDemoInit();
-	connect_wifi();
-	send_pairing_packet();
-	wait_pairing_packet();
+		/*
+		while(1){
+			scanKeys();
+			unsigned keys = keysDown();
+			if(keys & KEY_A){
+				send_missle_response(true);
+			}
+			if(keys & KEY_X){
+				send_missle_response(false);
+			}
+			Land_status status;
+			if(receive_missle_response(&status)){
+				if(status == HIT)
+					printf("Response hit received \n");
+				else if(status == MISS)
+					printf("Response miss received \n");
+			}
+			swiWaitForVBlank();
+		}
+		*/
+	init_game();
+	find_pair();
 	wait_start();
-	configure_graphics_main();//all empty
-	place_ships();
-	configure_graphics_sub();//all empty
-
+	configure_graphics_main();//upper screen to show the user
+	Battlefield* field = place_ships();
+	configure_graphics_sub();//sub screen to throw missles
+	play_game(field);
+	destroy_battlefield(field);
+	//configure_graphics_sub();//all empty
 
 	//place_ships();
 	//play_game();
 
-	Battlefield* field2 = create_battlefield(MAIN);
-	Battlefield* field = create_battlefield(SUB);
-
+	//Battlefield* field2 = create_battlefield(MAIN);
+	//Battlefield* field = create_battlefield(SUB);
+/*
 	Ship* big = create_ship(5,5,3,VERTICAL);
 	Ship* big2 = create_ship(9,7,7,HORIZONTAL);
 	Ship* big3 = create_ship(11,5,6,VERTICAL);
@@ -37,50 +56,7 @@ int main(void) {
 	add_temp(big2,field2);
 	add(big3, field);
 	show_missle_sub(11,5);
-	//remove_missle_sub(5,5);
-	//fire(field, 11, 5);
-
-	//remove_missle_sub(5,5);
-	//remove_temp(big3, field);
-	/*
-	move_temp(big3,field, LEFT);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, UP);
-	move_temp(big3,field, UP);
-	move_temp(big3,field, UP);
-	move_temp(big3,field, UP);
-	move_temp(big3,field, UP);
-	move_temp(big3,field, UP);
-	move_temp(big3,field, UP);
-	move_temp(big3,field, UP);
-	move_temp(big3,field, UP);
-	move_temp(big3,field, UP);
-	move_temp(big3,field,ROT);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field, DOWN);
-	move_temp(big3,field,ROT);
-	 */
-	//remove_temp(big2, field);
-	/*
-	fire(field, 5, 5);
-	fire(field, 3, 5);
-	fire(field, 3, 4);
-	fire(field, 3, 6);
-	fire(field, 3, 6);
-	fire(field, 6, 7);
-	fire(field, 7, 7);
-	fire(field, 12, 7);
-	*/
-    //printf("\nTemplate nds\n");
+*/
 
     while(1)
         swiWaitForVBlank();	

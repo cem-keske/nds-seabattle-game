@@ -4,12 +4,33 @@
 
 #define SHIP_COUNT  6
 
-bool opponent_ready = 0;
-bool player_ready = 0;
+bool opponent_ready = false;
+bool player_ready = false;
+bool game_starter = true;
+bool respond = false;
+bool my_move = true;
+
+int missle_x, missle_y, missle_rx, missle_ry;//sent and received missle indexes
+
+Land_status received_status = EMPTY;
 
 Ship* ships[SHIP_COUNT];
 
-void play_game(){}
+
+void init_game(){
+	opponent_ready = false;
+	player_ready = false;
+	respond = false;
+	game_starter = true;
+	my_move = true;
+	consoleDemoInit();
+	connect_wifi();
+}
+
+void find_pair(){
+	send_pairing_packet();
+	wait_pairing_packet();
+}
 
 void wait_start(){
 	printf("Press start if you are ready...\n\n");
@@ -92,22 +113,24 @@ Battlefield * place_ships(){
 					send_ship_placed(i + 1);
 					break; //place the next ship
 				}
-
 			}
 			opponent_ships = listen_placed_ships();
 			if(opponent_ships != 0)
 				printf("Opponent placed ship %d/%i \n\n", opponent_ships, SHIP_COUNT);
-			if(opponent_ships == SHIP_COUNT)
-				printf("Your opponent finished \n placing their ships. \n Hurry up! \n \n");
+			if(opponent_ships == SHIP_COUNT) {
+				printf("Your opponent finished \nplacing their ships. \nHurry up! \n \n");
+				game_starter = false; //opponent will start because you are late!
+				my_move = false;
+			}
 			swiWaitForVBlank();
 		}
-		/*
-			for(i = 0; i < SHIP_COUNT; ++i){
-				add_temp(ships[i], field);
-		}*/
 	}
-	printf("You placed your ships... \n\nPlease wait for your \nopponent to place their \nships... \n\n");
-	while(1){
+	if(game_starter){
+		printf("You placed your ships... \n\nPlease wait for your \nopponent to place their \nships... \n\n");
+		printf("You will start the game \n \n");
+
+	}
+	while(game_starter){//if you finished placing, wait for your opponent...
 		opponent_ships = listen_placed_ships();
 		if(opponent_ships != 0)
 			printf("Opponent placed ship %d/%i \n\n", opponent_ships, SHIP_COUNT);
@@ -115,8 +138,97 @@ Battlefield * place_ships(){
 			break;
 		swiWaitForVBlank();
 	}
+
+	//Destroy ships before quitting
+	for(i=0; i<SHIP_COUNT; ++i){
+		destroy_ship(ships[i]);
+	}
 	return field;
 }
+void play_game(Battlefield* home){
+	Battlefield* opponent = create_battlefield(SUB);
+	if(my_move){
+		show_missle_sub(missle_x, missle_y);
+	}
+	while(true){
+		if(respond == true){ //need to answer a missle packet
+			Land_status result = fire(home, missle_rx, missle_ry);
+			if(result == HIT)
+				send_missle_response(missle_rx, missle_ry,true);
+			else if(result == MISS)
+				send_missle_response(missle_rx, missle_ry, false);
+			respond = false; //the answer has been given...
+			my_move = true; //can play now
+			show_missle_sub(missle_x, missle_y);//show the missle to play
+		}
+
+		//manage user input
+		if(my_move){
+			scanKeys();
+			unsigned keys = keysDown();
+			if(keys & KEY_LEFT){
+				--missle_x;
+				if(missle_pos_inside(missle_x, missle_y) == false){//missle is outside
+					++missle_x;
+				} else { //new position is valid
+					remove_missle_sub(++missle_x, missle_y);//remove from the old position
+					show_missle_sub(--missle_x, missle_y);//add to the new position
+				}
+			}
+			if(keys & KEY_DOWN){
+				++missle_y;
+				if(missle_pos_inside(missle_x, missle_y) == false){//missle is outside
+					--missle_y;
+				} else { //new position is valid
+					remove_missle_sub(missle_x, --missle_y);//remove from the old position
+					show_missle_sub(missle_x, ++missle_y);//add to the new position
+				}
+			}
+			if(keys & KEY_UP){
+				--missle_y;
+				if(missle_pos_inside(missle_x, missle_y) == false){//missle is outside
+					++missle_y;
+				} else { //new position is valid
+					remove_missle_sub(missle_x, ++missle_y);//remove from the old position
+					show_missle_sub(missle_x, --missle_y);//add to the new position
+				}
+			}
+			if(keys & KEY_RIGHT){
+				++missle_x;
+				if(missle_pos_inside(missle_x, missle_y) == false){//missle is outside
+					--missle_x;
+				} else { //new position is valid
+					remove_missle_sub(--missle_x, missle_y);//remove from the old position
+					show_missle_sub(++missle_x, missle_y);//add to the new position
+				}
+			}
+			if(keys & KEY_X){//validate missle
+				if(fire_available(opponent, missle_x, missle_y) == true){
+					send_missle(missle_x, missle_y);
+					my_move = false; //move played
+					remove_missle_sub(missle_x, missle_y);
+				}
+			}
+		}
+
+
+		//receive packets and act accordingly
+		int received_packet = receive(&missle_rx, &missle_ry, &received_status);
+
+		if(received_packet != R_NONE){
+			if(received_packet == R_MISSLE){
+				respond = true; //an answer will be sent
+			} else if(received_packet == R_ANSWER){
+				//show the answer on your map
+				set(received_status, missle_rx, missle_ry, opponent);
+			}
+		}
+		swiWaitForVBlank();
+	}
+	destroy_battlefield(opponent);
+}
+
+
 
 bool move_temp(Ship* ship, Battlefield* field, Directions dir){
 	switch(dir){
