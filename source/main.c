@@ -31,6 +31,7 @@ int main(void) {
 			}
 			swiWaitForVBlank();
 		}
+
 		*/
 	init_game();
 	find_pair();

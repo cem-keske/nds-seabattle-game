@@ -3,9 +3,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define FIELD_WIDTH		16
-#define FIELD_HEIGHT	12
-
 
 /**
  * Creates an empty battlefield.
@@ -119,12 +116,9 @@ bool add(Ship* ship, Battlefield* field){
  * Shows a temporary ship on the battlefield. (not included in grid)
  */
 bool add_temp(Ship* ship, Battlefield* field){
-	//printf("here \n");
 	if(inside(ship) == false){
-		//printf("not inside \n");
 		return false;
 	}
-	//printf("here \n");
 	int i;
 	if(ship->orientation == HORIZONTAL){
 		for(i = ship->topleft_x; i < ship->topleft_x + ship->length; ++i){
@@ -216,5 +210,16 @@ bool available(Ship* ship, Battlefield* field){
 			}
 		}
 	return true;
+}
+
+
+
+
+void add_temp_missle(int x, int y){
+	show_missle_sub(x,y);
+}
+
+void remove_temp_missle(int x, int y){
+	remove_missle_sub(x,y);
 }
 

@@ -51,7 +51,11 @@ game.o: /home/nds/files/workspace/Seabattle_project/source/game.c \
   /opt/devkitPro/libnds/include/nds/system.h \
   /opt/devkitPro/libnds/include/nds/arm9/decompress.h \
   /home/nds/files/workspace/Seabattle_project/source/ship.h \
-  /home/nds/files/workspace/Seabattle_project/source/battlefield.h
+  /home/nds/files/workspace/Seabattle_project/source/battlefield.h \
+  /opt/devkitPro/libnds/include/maxmod9.h \
+  /opt/devkitPro/libnds/include/mm_types.h \
+  /home/nds/files/workspace/Seabattle_project/build/soundbank.h \
+  /home/nds/files/workspace/Seabattle_project/build/soundbank_bin.h
 
 /home/nds/files/workspace/Seabattle_project/source/game.h:
 
@@ -158,3 +162,11 @@ game.o: /home/nds/files/workspace/Seabattle_project/source/game.c \
 /home/nds/files/workspace/Seabattle_project/source/ship.h:
 
 /home/nds/files/workspace/Seabattle_project/source/battlefield.h:
+
+/opt/devkitPro/libnds/include/maxmod9.h:
+
+/opt/devkitPro/libnds/include/mm_types.h:
+
+/home/nds/files/workspace/Seabattle_project/build/soundbank.h:
+
+/home/nds/files/workspace/Seabattle_project/build/soundbank_bin.h:

@@ -20,6 +20,7 @@ typedef enum {LEFT, RIGHT, UP, DOWN, ROT} Directions;
  */
 void init_game();
 
+
 /**
  * Finds a pair on the network, this function blocks
  * the execution until an opponent is found.
@@ -28,7 +29,6 @@ void find_pair();
 
 /**
  * The main algorithm of the game
- * Returns the opponent field
  */
 void play_game(Battlefield* home);
 
@@ -52,5 +52,11 @@ Battlefield* place_ships();
  * Return false if not movable
  */
 bool move_temp(Ship* ship, Battlefield* field, Directions dir);
+
+/**
+ * Change the position of the ship and refresh the temporary display
+ * Return false if not movable
+ */
+bool move_temp_touch(Ship* ship, Battlefield* field, int x, int y);
 
 #endif /* GAME_H_ */

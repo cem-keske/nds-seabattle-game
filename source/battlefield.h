@@ -15,6 +15,10 @@
 #include <stdbool.h>
 
 
+#define FIELD_WIDTH		16
+#define FIELD_HEIGHT	12
+
+
 typedef struct{
 	Land_status* battle_grid;
 	Screen display;
@@ -68,10 +72,28 @@ bool add(Ship* ship, Battlefield* field);
  */
 bool add_temp(Ship* ship, Battlefield* field);
 
+
 /**
- * Removes the temporary ship on the battlefield. (not included in grid)
+ * Removes the temporary ship on the battlefield.
  */
 bool remove_temp(Ship* ship, Battlefield* field);
+
+
+/**
+ * Shows a temporary missle on the sub screen
+ * x,y, are grid positions
+ */
+void add_temp_missle(int x, int y);
+
+
+/**
+ * Removes the temporary missle on the sub screen
+ * x,y, are grid positions
+ */
+void remove_temp_missle(int x, int y);
+
+
+
 
 /**
  * Returns true if the operation of adding the ship to the given index doesn't
