@@ -5,11 +5,12 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#define SHIP_COUNT  3
+#define SHIP_COUNT  2
 
 //adjusts the maximum hits according to the ship creating algorithm
 const int MAX_SCORE = ((SHIP_COUNT+1)*(SHIP_COUNT+1)) >> 1;
 
+bool answer_received = true;
 bool wait_answer = false;
 bool finished = false;
 bool opponent_ready = false;
@@ -30,6 +31,14 @@ Ship* ships[SHIP_COUNT];
 
 
 void init_game(){
+	//Stop blinking if any
+	irqDisable(IRQ_TIMER0);
+	irqDisable(IRQ_TIMER1);
+	REG_DISPCNT = REG_DISPCNT & ~DISPLAY_BG0_ACTIVE;
+	REG_DISPCNT_SUB = REG_DISPCNT_SUB & ~DISPLAY_BG0_ACTIVE;
+
+
+	answer_received = true;
 	finished = false;
 	home_score = 0;
 	opponent_score = 0;
@@ -193,19 +202,28 @@ void play_game(Battlefield* home){
 	}
 	while(true){
 		if(respond == true){ //need to answer a missle packet
+			bool first_answer = fire_available(home, missle_rx, missle_ry);
 			Land_status result = fire(home, missle_rx, missle_ry);
-			if(result == HIT){
-				++opponent_score;
-				send_missle_response(missle_rx, missle_ry,true);
-				mmEffect(SFX_BOOM);
-			}
-			else if(result == MISS){
-				send_missle_response(missle_rx, missle_ry, false);
-				mmEffect(SFX_MISS);
-			}
-			respond = false; //the answer has been given...
-			my_move = true; //can play now
-			show_missle_sub(missle_x, missle_y);//show the missle to play
+				if(result == HIT){
+					if(first_answer){
+						++opponent_score;
+						mmEffect(SFX_BOOM);
+					}
+					send_missle_response(missle_rx, missle_ry,true);
+
+				}
+				else if(result == MISS){
+					send_missle_response(missle_rx, missle_ry, false);
+					if(first_answer)
+						mmEffect(SFX_MISS);
+				}
+				respond = false; //the answer has been given...
+				my_move = true; //can play now
+				show_missle_sub(missle_x, missle_y);//show the missle to play
+		}
+
+		if(!answer_received){//resend last missle
+			send_missle(missle_x, missle_y);
 		}
 
 		//manage user input
@@ -279,6 +297,7 @@ void play_game(Battlefield* home){
 				if(fire_available(opponent, missle_x, missle_y) == true){
 					send_missle(missle_x, missle_y);
 					my_move = false; //move played
+					answer_received = false; //wait for an answer
 					remove_missle_sub(missle_x, missle_y);
 				}
 			}
@@ -292,15 +311,19 @@ void play_game(Battlefield* home){
 			if(received_packet == R_MISSLE){
 				respond = true; //an answer will be sent
 			} else if(received_packet == R_ANSWER){
-				if(received_status == HIT){
-					++home_score;
-					mmEffect(SFX_BOOM);
-				} else if (received_status == MISS){
-					mmEffect(SFX_MISS);
-				}
+					answer_received = true;
 
-				//show the answer on your map
-				set(received_status, missle_rx, missle_ry, opponent);
+					//if it is a new packet then act
+					if(fire_available(opponent, missle_x, missle_y)){
+						if(received_status == HIT){
+							++home_score;
+							mmEffect(SFX_BOOM);
+						} else if (received_status == MISS){
+							mmEffect(SFX_MISS);
+						}
+				    }
+					//show the answer on your map
+					set(received_status, missle_rx, missle_ry, opponent);
 			}
 		}
 
@@ -442,21 +465,28 @@ bool move_temp_touch(Ship* ship, Battlefield* field, int x, int y){
 
 void end_game(){
 	consoleDemoInit();
+
+	//Stop blinking if any
+	irqDisable(IRQ_TIMER0);
+	irqDisable(IRQ_TIMER1);
+	REG_DISPCNT = REG_DISPCNT & ~DISPLAY_BG0_ACTIVE;
+	REG_DISPCNT_SUB = REG_DISPCNT_SUB & ~DISPLAY_BG0_ACTIVE;
+
 	if(win){
 		mmEffect(SFX_WIN);
-		printf("\n\n     _________\n");
-		printf("    |         |\n");
-		printf("	| VICTORY |\n");
-		printf("	|_________|\n\n");
-		printf("Press START to play again...\n");
+		printf("\n\n    _________\n");
+			printf("   |         |\n");
+			printf("	| VICTORY |\n");
+			printf("	|_________|\n\n");
+			printf("Press START to play again...\n\n\n");
 
 	} else if(!win){
 		mmEffect(SFX_LOSE);
-		printf("\n\n     _________\n");
-		printf("    |          |\n");
-		printf("	|  DEFEAT  |\n");
-		printf("	|__________|\n\n");
-		printf("Press START to play again...\n");
+		printf("\n\n    __________\n");
+			printf("   |          |\n");
+			printf("	|  DEFEAT  |\n");
+			printf("	|__________|\n\n");
+			printf("Press START to play again...\n\n\n");
 	}
 
 	while(true){

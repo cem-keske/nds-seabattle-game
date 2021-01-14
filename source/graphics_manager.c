@@ -7,7 +7,7 @@
 #define FULLTILE_RAM_POS  			FULLTILE_IDX * 32
 #define MISSTILE_RAM_POS  			MISSTILE_IDX * 32
 #define EMPTYTILE2_RAM_POS 			EMPTYTILE2_IDX*32
-#define TRANSPARENT_TILE_RAM_POS	TRANSPARENT_TILE_IDX*32
+#define EMPTYBOX_TILE_RAM_POS		EMPTYBOX_TILE_IDX*32
 #define TILES_END_RAM_POS 			TILE_END_IDX*32
 #define HITSHIP_TILES_RAM_POS 		TILES_END_RAM_POS
 #define HITSHIP_TILES_IDX			TILE_END_IDX
@@ -17,7 +17,7 @@
 const unsigned int* missle_tiles  = &(fire_missleTiles[64]);
 const unsigned int* hitship_tiles = &(fire_missleTiles[0]);
 
-typedef enum {EMPTYTILE_IDX = 0,TRANSPARENT_TILE_IDX , EMPTYTILE2_IDX,  FULLTILE_IDX, MISSTILE_IDX,  TILE_END_IDX} Tile_indexes ;
+typedef enum {EMPTYTILE_IDX = 0, EMPTYBOX_TILE_IDX , EMPTYTILE2_IDX,  FULLTILE_IDX, MISSTILE_IDX,  TILE_END_IDX} Tile_indexes ;
 typedef enum {BLUE1_IDX = 80, BLUE2_IDX, BLUE3_IDX, BLUE4_IDX, BLUE5_IDX, RED_IDX, GREEN_IDX, WHITE_IDX, BLACK_IDX, CYAN_IDX, CYAN2_IDX}Color_indexes ;
 
 
@@ -64,7 +64,7 @@ u8 full_tile[64] = {
 		 BLACK_IDX,  BLUE5_IDX,  BLUE1_IDX,  BLUE5_IDX,  BLUE2_IDX,  BLUE3_IDX,  BLUE4_IDX,  WHITE_IDX,
 };
 
-u8 transparent_tile[64] = {
+u8 emptybox_tile[64] = {
 		BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,
 		BLACK_IDX,0,0,0,0,0,0,0,
 		BLACK_IDX,0,0,0,0,0,0,0,
@@ -120,7 +120,7 @@ void configure_graphics_main(){
 	memcpy(&BG_TILE_RAM(0)[HITSHIP_TILES_RAM_POS], hitship_tiles, 64*4); //copy 4 tiles
 	memcpy(&BG_TILE_RAM(0)[MISSTILE_RAM_POS], miss_tile, 64);
 	memcpy(&BG_TILE_RAM(0)[FULLTILE_RAM_POS], full_tile, 64);
-	memcpy(&BG_TILE_RAM(0)[TRANSPARENT_TILE_RAM_POS], transparent_tile, 64);
+	memcpy(&BG_TILE_RAM(0)[EMPTYBOX_TILE_RAM_POS], emptybox_tile, 64);
 
 
 	//initalize an empty game grid
@@ -137,7 +137,7 @@ void init_toplevel(){
 	int i,j;
 		for(i = 0; i<12; i = i + 1)
 					for(j = 0; j < 16; j = j + 1)
-						tile_shower(TRANSPARENT_TILE_IDX, BG_MAP_RAM(2),j,i);
+						tile_shower(EMPTYBOX_TILE_IDX, BG_MAP_RAM(2),j,i);
 }
 
 void show_land(Land_status status, int x, int y){
@@ -156,7 +156,7 @@ void show_land_toplevel(Land_status status, int x, int y){
 		case MISS:	tile_shower(MISSTILE_IDX, BG_MAP_RAM(2),x,y); break;
 		case FULL:	tile_shower(FULLTILE_IDX, BG_MAP_RAM(2),x,y); break;
 		case EMPTY:	tile_shower(EMPTYTILE_IDX, BG_MAP_RAM(2),x,y); break;
-		case TRANSPARENT: tile_shower(TRANSPARENT_TILE_IDX,BG_MAP_RAM(2),x,y);
+		case TRANSPARENT: tile_shower(EMPTYBOX_TILE_IDX,BG_MAP_RAM(2),x,y);
 		default: break;
 		}
 }
@@ -198,13 +198,13 @@ void configure_graphics_sub(){
 	memcpy(&BG_TILE_RAM_SUB(0)[MISSLE_TILES_RAM_POS], missle_tiles, 64*4); //copy 4 tiles
 	memcpy(&BG_TILE_RAM_SUB(0)[MISSTILE_RAM_POS], miss_tile, 64);
 	memcpy(&BG_TILE_RAM_SUB(0)[FULLTILE_RAM_POS], full_tile, 64);
-	memcpy(&BG_TILE_RAM_SUB(0)[TRANSPARENT_TILE_RAM_POS], transparent_tile, 64);
+	memcpy(&BG_TILE_RAM_SUB(0)[EMPTYBOX_TILE_RAM_POS], emptybox_tile, 64);
 
 	int i,j;
 	for(j=0;j<16;++j){
 		for(i = 0; i<12; ++i){
 			tile_shower(EMPTYTILE_IDX, BG_MAP_RAM_SUB(1),j,i);
-		    tile_shower(TRANSPARENT_TILE_IDX, BG_MAP_RAM_SUB(2),j,i);
+		    tile_shower(EMPTYBOX_TILE_IDX, BG_MAP_RAM_SUB(2),j,i);
 		}
 	}
 }
@@ -224,7 +224,7 @@ void show_missle_sub(int x, int y){
 }
 
 void remove_missle_sub(int x, int y){
-	tile_shower(TRANSPARENT_TILE_IDX, BG_MAP_RAM_SUB(2),x,y);
+	tile_shower(EMPTYBOX_TILE_IDX, BG_MAP_RAM_SUB(2),x,y);
 }
 
 
