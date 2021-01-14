@@ -5,15 +5,22 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#define SHIP_COUNT  6
+#define SHIP_COUNT  3
 
+//adjusts the maximum hits according to the ship creating algorithm
+const int MAX_SCORE = ((SHIP_COUNT+1)*(SHIP_COUNT+1)) >> 1;
+
+bool wait_answer = false;
+bool finished = false;
 bool opponent_ready = false;
 bool player_ready = false;
 bool game_starter = true;
 bool respond = false;
 bool my_move = true;
 bool win = false;
-int hit_counter = 0;
+int home_score = 0;
+int opponent_score = 0;
+
 
 int missle_x, missle_y, missle_rx, missle_ry;//sent and received missle indexes
 
@@ -23,7 +30,9 @@ Ship* ships[SHIP_COUNT];
 
 
 void init_game(){
-	hit_counter = 0;
+	finished = false;
+	home_score = 0;
+	opponent_score = 0;
 	opponent_ready = false;
 	player_ready = false;
 	respond = false;
@@ -44,7 +53,6 @@ void init_game(){
 	consoleDemoInit();
 	printf("Connecting to wifi...\n\n");
 	mmEffect(SFX_HURRY);
-	//mmEffect(SFX_CLICK);
 	connect_wifi();
 	mmEffect(SFX_CLICK);
 }
@@ -187,6 +195,7 @@ void play_game(Battlefield* home){
 		if(respond == true){ //need to answer a missle packet
 			Land_status result = fire(home, missle_rx, missle_ry);
 			if(result == HIT){
+				++opponent_score;
 				send_missle_response(missle_rx, missle_ry,true);
 				mmEffect(SFX_BOOM);
 			}
@@ -284,6 +293,7 @@ void play_game(Battlefield* home){
 				respond = true; //an answer will be sent
 			} else if(received_packet == R_ANSWER){
 				if(received_status == HIT){
+					++home_score;
 					mmEffect(SFX_BOOM);
 				} else if (received_status == MISS){
 					mmEffect(SFX_MISS);
@@ -292,6 +302,20 @@ void play_game(Battlefield* home){
 				//show the answer on your map
 				set(received_status, missle_rx, missle_ry, opponent);
 			}
+		}
+
+		//loop breaker, boolean "finished" will be true if everything is ok
+		if(finished){
+			break;
+		}
+
+		//Check for a winner
+		if(home_score == MAX_SCORE){
+			win = true;
+			finished = true;
+		} else if(opponent_score == MAX_SCORE){
+			win = false;
+			finished = true;
 		}
 		swiWaitForVBlank();
 	}
@@ -416,3 +440,31 @@ bool move_temp_touch(Ship* ship, Battlefield* field, int x, int y){
 			return true;
 }
 
+void end_game(){
+	consoleDemoInit();
+	if(win){
+		mmEffect(SFX_WIN);
+		printf("\n\n     _________\n");
+		printf("    |         |\n");
+		printf("	| VICTORY |\n");
+		printf("	|_________|\n\n");
+		printf("Press START to play again...\n");
+
+	} else if(!win){
+		mmEffect(SFX_LOSE);
+		printf("\n\n     _________\n");
+		printf("    |          |\n");
+		printf("	|  DEFEAT  |\n");
+		printf("	|__________|\n\n");
+		printf("Press START to play again...\n");
+	}
+
+	while(true){
+		scanKeys();
+		unsigned keys = keysDown();
+		if(keys & KEY_START)
+			break;
+		swiWaitForVBlank();
+	}
+
+}

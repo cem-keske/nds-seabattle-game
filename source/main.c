@@ -33,14 +33,19 @@ int main(void) {
 		}
 
 		*/
-	init_game();
-	find_pair();
-	wait_start();
-	configure_graphics_main();//upper screen to show the user
-	Battlefield* field = place_ships();
-	configure_graphics_sub();//sub screen to throw missles
-	play_game(field);
-	destroy_battlefield(field);
+	while(true){
+		init_game();
+		find_pair();
+		wait_start();
+		configure_graphics_main(); //upper screen to show the user
+		Battlefield* field = place_ships();
+		configure_graphics_sub();  //sub screen to throw missles
+		play_game(field);
+		end_game();
+		destroy_battlefield(field);
+	}
+
+
 	//configure_graphics_sub();//all empty
 
 	//place_ships();
