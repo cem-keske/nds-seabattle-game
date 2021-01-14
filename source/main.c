@@ -23,6 +23,8 @@ int main(void) {
 		play_game(field);
 		end_game();
 		destroy_battlefield(field);
+
+
 	}
 
     while(1)
