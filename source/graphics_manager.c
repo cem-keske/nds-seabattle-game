@@ -32,6 +32,7 @@ u8 empty_tile[64] = {
 		 BLACK_IDX,  BLUE2_IDX,  BLUE2_IDX,  BLUE2_IDX,  BLUE2_IDX,  BLUE2_IDX,  BLUE2_IDX,  BLUE2_IDX,
 		 BLACK_IDX,  BLUE5_IDX,  BLUE5_IDX,  BLUE5_IDX,  BLUE5_IDX,  BLUE5_IDX,  BLUE5_IDX,  BLUE5_IDX
 };
+
 u8 miss_tile[64] = {
 		 BLACK_IDX,  BLACK_IDX,  BLACK_IDX,  BLACK_IDX,  BLACK_IDX,  BLACK_IDX,  BLACK_IDX,  BLACK_IDX,
 		 BLACK_IDX,  WHITE_IDX,  BLACK_IDX,  BLACK_IDX,  BLUE1_IDX,  BLUE1_IDX,  BLUE1_IDX,  BLUE1_IDX,
@@ -64,6 +65,7 @@ u8 full_tile[64] = {
 		 BLACK_IDX,  BLUE5_IDX,  BLUE1_IDX,  BLUE5_IDX,  BLUE2_IDX,  BLUE3_IDX,  BLUE4_IDX,  WHITE_IDX,
 };
 
+//tile with borders but transparent inside
 u8 emptybox_tile[64] = {
 		BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,BLACK_IDX,
 		BLACK_IDX,0,0,0,0,0,0,0,
@@ -250,6 +252,3 @@ void tile_shower_2x2(u16 tile_2x2_index, u16* map, int grid_x, int grid_y){
 	map[(upleft_y+1) * 32 + upleft_x+1] = tile_2x2_index + 3;
 
 }
-
-
-void configure_map();

@@ -5,10 +5,10 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#define SHIP_COUNT  2
+#define SHIP_COUNT  3
 
-//adjusts the maximum hits according to the ship creating algorithm
-const int MAX_SCORE = ((SHIP_COUNT+1)*(SHIP_COUNT+1)) >> 1;
+
+// ----- Game Varibles -----
 
 bool answer_received = true;
 bool wait_answer = false;
@@ -22,22 +22,27 @@ bool win = false;
 int home_score = 0;
 int opponent_score = 0;
 
+//adjust the maximum hits according to the ship creating algorithm
+const int MAX_SCORE = ((SHIP_COUNT+1)*(SHIP_COUNT+1)) >> 1;
 
-int missle_x, missle_y, missle_rx, missle_ry;//sent and received missle indexes
+//sent and received missle indexes
+int missle_x, missle_y, missle_rx, missle_ry;
 
+//last received land status
 Land_status received_status = EMPTY;
 
+//pointer array
 Ship* ships[SHIP_COUNT];
 
 
 void init_game(){
-	//Stop blinking if any
+	//Stop blinking if there is
 	irqDisable(IRQ_TIMER0);
 	irqDisable(IRQ_TIMER1);
 	REG_DISPCNT = REG_DISPCNT & ~DISPLAY_BG0_ACTIVE;
 	REG_DISPCNT_SUB = REG_DISPCNT_SUB & ~DISPLAY_BG0_ACTIVE;
 
-
+	//setup game parameters
 	answer_received = true;
 	finished = false;
 	home_score = 0;
@@ -47,7 +52,8 @@ void init_game(){
 	respond = false;
 	game_starter = true;
 	my_move = true;
-	//sound
+
+	//initialize sound effects
 	mmInitDefaultMem((mm_addr)soundbank_bin);
 	mmLoadEffect(SFX_CLICK);
 	mmLoadEffect(SFX_BOOM);
@@ -58,9 +64,9 @@ void init_game(){
 
 
 
-	//console
+	//initalize console and connect to wifi
 	consoleDemoInit();
-	printf("Connecting to wifi...\n\n");
+	printf("Connecting to WiFi...\n\n");
 	mmEffect(SFX_HURRY);
 	connect_wifi();
 	mmEffect(SFX_CLICK);
@@ -168,7 +174,7 @@ Battlefield * place_ships(){
 			}
 			if(opponent_ships == SHIP_COUNT) {
 				printf("Your opponent finished \nplacing their ships. \nHurry up! \n \n");
-				game_starter = false; //opponent will start because you are late!
+				game_starter = false; //opponent will start because the player is late!
 				my_move = false;
 			}
 			swiWaitForVBlank();
@@ -178,7 +184,7 @@ Battlefield * place_ships(){
 		printf("You placed your ships... \n\nPlease wait for your \nopponent to place their \nships... \n\n");
 		printf("You will start the game \n \n");
 	}
-	while(game_starter){//if you finished placing, wait for your opponent...
+	while(game_starter){//if finished placing, wait for the opponent...
 		opponent_ships = listen_placed_ships();
 		if(opponent_ships != 0){
 			mmEffect(SFX_HURRY);
@@ -189,12 +195,14 @@ Battlefield * place_ships(){
 		swiWaitForVBlank();
 	}
 
-	//Destroy ships before quitting
+	//Destroy ships before quitting, as these are added to the battlefield
 	for(i=0; i<SHIP_COUNT; ++i){
 		destroy_ship(ships[i]);
 	}
 	return field;
 }
+
+
 void play_game(Battlefield* home){
 	Battlefield* opponent = create_battlefield(SUB);
 	if(my_move){
@@ -463,7 +471,15 @@ bool move_temp_touch(Ship* ship, Battlefield* field, int x, int y){
 			return true;
 }
 
+
 void end_game(){
+
+	//Loop to empty wifi buffer
+	int x,y;
+	LandStatus tmp;
+	while(receive(&x,&y,&tmp) != R_NONE){}
+
+
 	consoleDemoInit();
 
 	//Stop blinking if any

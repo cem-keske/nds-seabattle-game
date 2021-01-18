@@ -28,7 +28,7 @@ void init_game();
 void find_pair();
 
 /**
- * The main algorithm of the game
+ * The main algorithm of the game, blocks execution until there's a winner
  */
 void play_game(Battlefield* home);
 
@@ -42,6 +42,7 @@ void wait_start();
  * Asks the user to place ship on the home fields,
  * receives packets from the opponent indicating the opponent
  * ships were placed.
+ *
  * Sets game_starter boolean accordingly.
  * (The first player to place their ship starts the game.)
  */

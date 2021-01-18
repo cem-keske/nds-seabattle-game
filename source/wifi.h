@@ -20,12 +20,10 @@
 #define MISSLE_PACKET_ID  6
 #define HIT_CONTENT  'H'
 #define MISS_CONTENT 'M'
-#define R_NONE -1
-#define R_MISSLE 1
-#define R_ANSWER 2
+
 
 /**
- * Connects wifi and prints the states
+ * Connects to WiFi and prints the states
  */
 bool connect_wifi();
 
@@ -59,43 +57,35 @@ void send_ship_placed(unsigned char ship_nbr);
 
 /**
  * Receive a packet from the opponent informing that a ship was placed.
- * \return The number of the ship placed, 0 otherwise.
+ * Return the number of the ship placed, 0 otherwise (no ship placed).
  */
 unsigned char listen_placed_ships();
 
 /**
- * Sends a response to the opponent inticating if the previous missle
- * resulted in a hit
+ * Sends a missle response packet indicating if the result was hit or miss.
  */
-//void send_missle_response(bool hit);
-
-/**
-*	Wait for a missle response, return true if hit, false if miss
- */
-//bool wait_missle_response();
-
-/**
- * True if a packet is received,
- * set status accordingly
- */
-//bool receive_missle_response(Land_status* status);
-
-/**
- * Sends a missle packet to the opponent indicating the position of the missle
- */
-//void send_missle_packet(char x, char y);
-
-
-/**
- * Receives the missle sent by opponent
- * Returns true if a missle was sent, false otherwise
- */
-//bool receive_missle_packet(int* x, int* y);
-
 void send_missle_response(int x, int y, bool hit);
 
+/**
+ * Sends a missle packet to the given index
+ */
 void send_missle(int x, int y);
 
+//Receive constants
+#define R_NONE -1
+#define R_MISSLE 1
+#define R_ANSWER 2
+
+/**
+ * Receives a packet and parses it.
+ *
+ * The received packet can be:
+ *
+ * -A missle response packet
+ * -A missle packet
+ * -Nothing
+ *
+ */
 int receive(int* x, int* y, Land_status* status);
 
 #endif /* WIFI_H_ */

@@ -24,8 +24,9 @@ typedef struct{
 	Screen display;
 } Battlefield;
 
+
 /**
- * Creates an empty battlefield.
+ * Create an empty battlefield with dynamic memory allocation.
  */
 Battlefield* create_battlefield(Screen display);
 
@@ -45,43 +46,46 @@ void destroy_battlefield(Battlefield* battlefield);
  *
  * EMPTY -> MISS
  * FULL  -> HIT
- * MISS  -> MISS (INVALID)
- * HIT	 -> HIT  (INVALID)
+ * MISS  -> MISS
+ * HIT	 -> HIT
  *
  */
 Land_status fire(Battlefield* battlefield ,int x, int y);
 
 /**
- * Returns true if the index has NOT previously been shot.
+ * Returns (true) if the index has NOT previously been shot.
  */
 bool fire_available(Battlefield* battlefield ,int x, int y);
 
 /**
- * Returns true if the given index is inside the grid.
+ * Returns (true) if the given index is inside the grid.
  */
 bool missle_pos_inside(int x, int y);
 
 /**
  * Adds the ship to the battlefield and shows it.
+ * The operation may fail if there's another ship on the given position
  * Returns true if the place is empty and the operation is successful.
  */
 bool add(Ship* ship, Battlefield* field);
 
 /**
- * Shows a temporary ship on the battlefield. (not included in grid)
+ * Shows a temporary ship on the battlefield without adding it to
+ * the batle grid.
  */
 bool add_temp(Ship* ship, Battlefield* field);
 
 
 /**
- * Removes the temporary ship on the battlefield.
+ * Removes the temporary ship on the battlefield. (Does not remove
+ * a ship from the grid)
  */
 bool remove_temp(Ship* ship, Battlefield* field);
 
 
 /**
  * Shows a temporary missle on the sub screen
- * x,y, are grid positions
+ * @param x,y grid positions
  */
 void add_temp_missle(int x, int y);
 

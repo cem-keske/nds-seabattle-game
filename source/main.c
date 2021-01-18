@@ -4,20 +4,17 @@
  */
 
 #include <nds.h>
-#include <stdio.h>
 #include "graphics_manager.h"
 #include "battlefield.h"
 #include "game.h"
-#include "wifi.h"
 
 
 int main(void) {
 		init_game();
 		find_pair();
-		wait_start();
-
 	while(true){
 		configure_graphics_main(); //upper screen to show the user
+		wait_start();
 		Battlefield* field = place_ships();
 		configure_graphics_sub();  //sub screen to throw missles
 		play_game(field);
@@ -26,8 +23,6 @@ int main(void) {
 
 
 	}
-
     while(1)
         swiWaitForVBlank();	
-
 }

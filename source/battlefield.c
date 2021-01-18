@@ -4,9 +4,6 @@
 #include <stdio.h>
 
 
-/**
- * Creates an empty battlefield.
- */
 Battlefield* create_battlefield(Screen display){
 	Battlefield* f = malloc(sizeof(Battlefield));
 	f->battle_grid = malloc(sizeof(Land_status) * FIELD_WIDTH * FIELD_HEIGHT);
@@ -18,24 +15,12 @@ Battlefield* create_battlefield(Screen display){
 	return f;
 }
 
-/**
- * C-type struct destructor, frees up the memory
- */
+
 void destroy_battlefield(Battlefield* battlefield){
 	free(battlefield->battle_grid);
 	free(battlefield);
 }
 
-/**
- * Takes a shot to the corresponding index, returns the resulting land status
- * updates the graphics.
- *
- * EMPTY -> MISS
- * FULL  -> HIT
- * MISS  -> MISS (INVALID)
- * HIT	 -> HIT  (INVALID)
- *
- */
 Land_status fire(Battlefield* battlefield ,int x, int y){
 	Land_status* current = &battlefield->battle_grid[y*FIELD_WIDTH + x];
 
@@ -52,9 +37,6 @@ Land_status fire(Battlefield* battlefield ,int x, int y){
 	return *current;
 }
 
-/**
- * Set the given index (x,y) to the given status and show it on the map
- */
 void set(Land_status status, int x, int y, Battlefield* field){
 	field->battle_grid[y*FIELD_WIDTH + x] = status;
 	if(field->display == SUB)
@@ -63,9 +45,6 @@ void set(Land_status status, int x, int y, Battlefield* field){
 			show_land(status,x,y);
 }
 
-/**
- * Returns true if the index has NOT previously been shot.
- */
 bool fire_available(Battlefield* battlefield, int x, int y){
 	if(battlefield->battle_grid[y*FIELD_WIDTH + x] == FULL ||
 			battlefield->battle_grid[y*FIELD_WIDTH + x] == EMPTY)
@@ -79,10 +58,7 @@ bool missle_pos_inside(int x, int y){
 	return true;
 }
 
-/**
- * Adds the ship to the battlefield and shows it.
- * Returns true if the place is empty and the operation is successful.
- */
+
 bool add(Ship* ship, Battlefield* field){
 	if(available(ship,field)){
 		int i;
@@ -112,9 +88,7 @@ bool add(Ship* ship, Battlefield* field){
 
 }
 
-/**
- * Shows a temporary ship on the battlefield. (not included in grid)
- */
+
 bool add_temp(Ship* ship, Battlefield* field){
 	if(inside(ship) == false){
 		return false;
