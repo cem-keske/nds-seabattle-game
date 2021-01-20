@@ -10,9 +10,11 @@
 
 
 int main(void) {
+
+	while(true){
 		init_game();
 		find_pair();
-	while(true){
+		reset_game_parameters();
 		configure_graphics_main(); //upper screen to show the user
 		wait_start();
 		Battlefield* field = place_ships();
@@ -20,8 +22,6 @@ int main(void) {
 		play_game(field);
 		end_game();
 		destroy_battlefield(field);
-
-
 	}
     while(1)
         swiWaitForVBlank();	

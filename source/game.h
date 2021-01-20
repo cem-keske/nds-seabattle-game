@@ -61,8 +61,14 @@ bool move_temp(Ship* ship, Battlefield* field, Directions dir);
 bool move_temp_touch(Ship* ship, Battlefield* field, int x, int y);
 
 /**
- * Shows the end of the game. Returns when START pressed.
+ * Shows the end of the game, plays sounds
  */
 void end_game();
+
+/**
+ * Resets the game parameters to their default values
+ *
+ */
+void reset_game_parameters();
 
 #endif /* GAME_H_ */

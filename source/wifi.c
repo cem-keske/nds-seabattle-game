@@ -22,14 +22,14 @@ void send_pairing_packet(){
 
 
 void wait_pairing_packet(){
-	printf("Waiting for another player to join! \n\n");
+	printf("Waiting for another\nplayer to join! \n\n");
 	while(1){
 		char msg[1];
 
 		if(receiveData(msg, 1) > 0){
 			//a message is received
 			if(msg[0] == PAIRING_REQ){
-				printf("A new player has joined the network! \n\n");
+				printf("A new player has joined\nthe network! \n\n");
 				msg[0] = PAIRING_ACK;
 				sendData(msg, 1);
 				printf("Pairing successful! \n\n");

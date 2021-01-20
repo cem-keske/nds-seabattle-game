@@ -5,7 +5,7 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#define SHIP_COUNT  3
+#define SHIP_COUNT  4
 
 
 // ----- Game Varibles -----
@@ -52,6 +52,8 @@ void init_game(){
 	respond = false;
 	game_starter = true;
 	my_move = true;
+	wait_answer = false;
+	win = false;
 
 	//initialize sound effects
 	mmInitDefaultMem((mm_addr)soundbank_bin);
@@ -72,6 +74,20 @@ void init_game(){
 	mmEffect(SFX_CLICK);
 }
 
+void reset_game_parameters(){
+		answer_received = true;
+		finished = false;
+		home_score = 0;
+		opponent_score = 0;
+		opponent_ready = false;
+		player_ready = false;
+		respond = false;
+		game_starter = true;
+		my_move = true;
+		wait_answer = false;
+		win = false;
+}
+
 void find_pair(){
 	send_pairing_packet();
 	wait_pairing_packet();
@@ -86,6 +102,9 @@ void wait_start(){
 			scanKeys();
 			unsigned keys = keysDown();
 			if(keys == KEY_START){
+				//send three times to ensure...
+				send_ready_packet();
+				send_ready_packet();
 				send_ready_packet();
 				player_ready = true;
 				printf("You are ready... \n\n");
@@ -102,15 +121,26 @@ void wait_start(){
 			}
 		}
 
-		if(player_ready == true && opponent_ready == true)
+		if(player_ready == true && opponent_ready == true){
+
+			//Loop to empty wifi buffer
+			int x,y;
+			Land_status tmp;
+			while(receive(&x,&y,&tmp) != R_NONE){}
+
+			//quit the loop
 			break;
+		}
+
 
 		swiWaitForVBlank();
 	}
 }
 
 Battlefield * place_ships(){
+
 	Battlefield* field = create_battlefield(MAIN);
+
 	//initialize ship array
 	int i;
 	for(i = 0; i < SHIP_COUNT; ++i){
@@ -476,17 +506,18 @@ void end_game(){
 
 	//Loop to empty wifi buffer
 	int x,y;
-	LandStatus tmp;
+	Land_status tmp;
 	while(receive(&x,&y,&tmp) != R_NONE){}
-
-
-	consoleDemoInit();
 
 	//Stop blinking if any
 	irqDisable(IRQ_TIMER0);
 	irqDisable(IRQ_TIMER1);
 	REG_DISPCNT = REG_DISPCNT & ~DISPLAY_BG0_ACTIVE;
 	REG_DISPCNT_SUB = REG_DISPCNT_SUB & ~DISPLAY_BG0_ACTIVE;
+
+
+	consoleDemoInit();
+
 
 	if(win){
 		mmEffect(SFX_WIN);
@@ -504,13 +535,4 @@ void end_game(){
 			printf("	|__________|\n\n");
 			printf("Press START to play again...\n\n\n");
 	}
-
-	while(true){
-		scanKeys();
-		unsigned keys = keysDown();
-		if(keys & KEY_START)
-			break;
-		swiWaitForVBlank();
-	}
-
 }
