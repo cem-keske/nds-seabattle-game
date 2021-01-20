@@ -5,7 +5,7 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#define SHIP_COUNT  4
+#define SHIP_COUNT  1
 
 
 // ----- Game Varibles -----

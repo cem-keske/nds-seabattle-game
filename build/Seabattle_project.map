@@ -255,7 +255,7 @@ dhcp_p              0x4               /opt/devkitPro/libnds/lib/libdswifi9.a(sgI
 dhcp_optionptr      0x4               /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_DHCP.o)
 socketlist          0x100             /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_sockets.o)
 bgIsTextLut         0x8               /opt/devkitPro/libnds/lib/libnds9.a(background.o)
-ships               0x10              game.o
+ships               0x4               game.o
 querydata           0x200             /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_DNS.o)
 responsedata        0x200             /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_DNS.o)
 dhcp_int            0x4               /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_DHCP.o)
@@ -1970,7 +1970,7 @@ Linker script and memory map
                 0x0b000000                . = ALIGN (0x4)
                 0x0b000000                __sbss_end = ABSOLUTE (.)
 
-.bss            0x022d6064    0x14fa0
+.bss            0x022d6064    0x14f94
                 0x022d6064                __bss_start = ABSOLUTE (.)
                 0x022d6064                __bss_start__ = ABSOLUTE (.)
  *(.dynbss)
@@ -2143,110 +2143,110 @@ Linker script and memory map
  .bss           0x022d7190        0x0 /opt/devkitPro/devkitARM/lib/gcc/arm-eabi/4.3.3/thumb/crtend.o
  .bss           0x022d7190        0x0 /opt/devkitPro/devkitARM/lib/gcc/arm-eabi/4.3.3/thumb/crtn.o
  *(COMMON)
- COMMON         0x022d7190       0x20 game.o
+ COMMON         0x022d7190       0x14 game.o
                 0x022d7190                missle_x
                 0x022d7194                missle_ry
                 0x022d7198                ships
-                0x022d71a8                missle_rx
-                0x022d71ac                missle_y
- COMMON         0x022d71b0       0x24 WiFi_minilib.o
-                0x022d71b0                sa_in
-                0x022d71c0                socket_id
-                0x022d71c4                sa_out
- COMMON         0x022d71d4       0x40 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_Hub.o)
-                0x022d71d4                ProtocolInterfaces
-                0x022d71dc                NumHWInterfaces
-                0x022d71e0                HWInterfaces
-                0x022d7210                NumProtocolInterfaces
- COMMON         0x022d7214      0x100 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_sockets.o)
-                0x022d7214                socketlist
- COMMON         0x022d7314     0x9fac /opt/devkitPro/libnds/lib/libdswifi9.a(wifi_arm9.o)
-                0x022d7314                Wifi_Data_Struct
-                0x022e1258                wifi_hw
-                0x022e125c                wHeapsize
-                0x022e1260                wHeapFirst
-                0x022e1264                wifi_connect_point
-                0x022e12bc                wHeapStart
- COMMON         0x022e12c0       0x10 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP.o)
-                0x022e12c0                count_100ms
-                0x022e12c4                count_1000ms
-                0x022e12c8                sgIP_timems
-                0x022e12cc                sgIP_errno
- COMMON         0x022e12d0      0x400 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_ARP.o)
-                0x022e12d0                ArpRecords
- COMMON         0x022e16d0       0x84 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_DHCP.o)
-                0x022e16d0                dhcp_rcvd_dns
-                0x022e16dc                dhcp_rcvd_snmask
-                0x022e16e0                dhcp_state
-                0x022e16e4                dhcp_p
-                0x022e16e8                dhcp_optionptr
-                0x022e16ec                dhcp_int
-                0x022e16f0                dhcp_rcvd_ip
-                0x022e16f4                dhcp_hostname
-                0x022e1734                dhcp_serverip
-                0x022e1738                dhcp_tid
-                0x022e173c                dhcp_requestDNS
-                0x022e1740                dhcp_socket
-                0x022e1744                dhcp_timestart
-                0x022e1748                dhcp_status
-                0x022e174c                dhcp_rcvd_gateway
-                0x022e1750                dhcp_timelastaction
- COMMON         0x022e1754     0x5cb4 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_DNS.o)
-                0x022e1754                dnsrecord_return
-                0x022e1c78                time_count
-                0x022e1c7c                alias_list
-                0x022e1c90                querydata
-                0x022e1e90                responsedata
-                0x022e2090                dnsrecords
-                0x022e72d0                ipaddr_ip
-                0x022e72d4                query_time_start
-                0x022e72d8                addr_list
-                0x022e72ec                ipaddr_alias
-                0x022e73ec                dns_sock
-                0x022e73f0                last_id
-                0x022e73f4                dnsrecord_hostent
- COMMON         0x022e7408        0x4 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_IP.o)
-                0x022e7408                idnum_count
- COMMON         0x022e740c      0x810 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_TCP.o)
-                0x022e740c                tcprecords
-                0x022e7410                lasttime
-                0x022e7414                port_counter
-                0x022e7418                numsynlist
-                0x022e741c                synlist
- COMMON         0x022e7c1c        0x8 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_UDP.o)
-                0x022e7c1c                udpport_counter
-                0x022e7c20                udprecords
- COMMON         0x022e7c24       0x5c /opt/devkitPro/libnds/lib/libnds9.a(console.o)
-                0x022e7c24                currentCopy
- COMMON         0x022e7c80        0x4 /opt/devkitPro/libnds/lib/libnds9.a(initSystem.o)
-                0x022e7c80                theTime
- COMMON         0x022e7c84     0x2020 /opt/devkitPro/libnds/lib/libnds9.a(videoGL.o)
-                0x022e7c84                glGlobalData
- COMMON         0x022e9ca4     0x1214 /opt/devkitPro/libnds/lib/libnds9.a(fifosystem.o)
-                0x022e9ca4                fifo_datamsg_data
-                0x022e9ce4                fifo_buffer
-                0x022eace4                fifo_value32_func
-                0x022ead24                fifo_address_func
-                0x022ead64                fifo_freelist_start
-                0x022ead68                fifo_value32_data
-                0x022eada8                fifo_sendwords_end
-                0x022eadac                fifo_rcvdwords_start
-                0x022eadb0                fifo_channel_start
-                0x022eadf0                fifo_sendwords_start
-                0x022eadf4                fifo_address_data
-                0x022eae34                fifo_channel_end
-                0x022eae74                fifo_rcvdwords_end
-                0x022eae78                fifo_datamsg_func
- COMMON         0x022eaeb8      0x148 /opt/devkitPro/libnds/lib/libnds9.a(background.o)
-                0x022eaeb8                bgState
-                0x022eaff8                bgIsTextLut
- COMMON         0x022eb000        0x4 /opt/devkitPro/devkitARM/lib/gcc/arm-eabi/4.3.3/../../../../arm-eabi/lib/thumb/libsysbase.a(times.o)
-                0x022eb000                punixTime
-                0x022eb004                . = ALIGN (0x4)
-                0x022eb004                __bss_end = ABSOLUTE (.)
-                0x022eb004                __bss_end__ = __bss_end
-                0x022eb004                _end = __bss_end__
-                0x022eb004                __end__ = __bss_end__
+                0x022d719c                missle_rx
+                0x022d71a0                missle_y
+ COMMON         0x022d71a4       0x24 WiFi_minilib.o
+                0x022d71a4                sa_in
+                0x022d71b4                socket_id
+                0x022d71b8                sa_out
+ COMMON         0x022d71c8       0x40 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_Hub.o)
+                0x022d71c8                ProtocolInterfaces
+                0x022d71d0                NumHWInterfaces
+                0x022d71d4                HWInterfaces
+                0x022d7204                NumProtocolInterfaces
+ COMMON         0x022d7208      0x100 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_sockets.o)
+                0x022d7208                socketlist
+ COMMON         0x022d7308     0x9fac /opt/devkitPro/libnds/lib/libdswifi9.a(wifi_arm9.o)
+                0x022d7308                Wifi_Data_Struct
+                0x022e124c                wifi_hw
+                0x022e1250                wHeapsize
+                0x022e1254                wHeapFirst
+                0x022e1258                wifi_connect_point
+                0x022e12b0                wHeapStart
+ COMMON         0x022e12b4       0x10 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP.o)
+                0x022e12b4                count_100ms
+                0x022e12b8                count_1000ms
+                0x022e12bc                sgIP_timems
+                0x022e12c0                sgIP_errno
+ COMMON         0x022e12c4      0x400 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_ARP.o)
+                0x022e12c4                ArpRecords
+ COMMON         0x022e16c4       0x84 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_DHCP.o)
+                0x022e16c4                dhcp_rcvd_dns
+                0x022e16d0                dhcp_rcvd_snmask
+                0x022e16d4                dhcp_state
+                0x022e16d8                dhcp_p
+                0x022e16dc                dhcp_optionptr
+                0x022e16e0                dhcp_int
+                0x022e16e4                dhcp_rcvd_ip
+                0x022e16e8                dhcp_hostname
+                0x022e1728                dhcp_serverip
+                0x022e172c                dhcp_tid
+                0x022e1730                dhcp_requestDNS
+                0x022e1734                dhcp_socket
+                0x022e1738                dhcp_timestart
+                0x022e173c                dhcp_status
+                0x022e1740                dhcp_rcvd_gateway
+                0x022e1744                dhcp_timelastaction
+ COMMON         0x022e1748     0x5cb4 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_DNS.o)
+                0x022e1748                dnsrecord_return
+                0x022e1c6c                time_count
+                0x022e1c70                alias_list
+                0x022e1c84                querydata
+                0x022e1e84                responsedata
+                0x022e2084                dnsrecords
+                0x022e72c4                ipaddr_ip
+                0x022e72c8                query_time_start
+                0x022e72cc                addr_list
+                0x022e72e0                ipaddr_alias
+                0x022e73e0                dns_sock
+                0x022e73e4                last_id
+                0x022e73e8                dnsrecord_hostent
+ COMMON         0x022e73fc        0x4 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_IP.o)
+                0x022e73fc                idnum_count
+ COMMON         0x022e7400      0x810 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_TCP.o)
+                0x022e7400                tcprecords
+                0x022e7404                lasttime
+                0x022e7408                port_counter
+                0x022e740c                numsynlist
+                0x022e7410                synlist
+ COMMON         0x022e7c10        0x8 /opt/devkitPro/libnds/lib/libdswifi9.a(sgIP_UDP.o)
+                0x022e7c10                udpport_counter
+                0x022e7c14                udprecords
+ COMMON         0x022e7c18       0x5c /opt/devkitPro/libnds/lib/libnds9.a(console.o)
+                0x022e7c18                currentCopy
+ COMMON         0x022e7c74        0x4 /opt/devkitPro/libnds/lib/libnds9.a(initSystem.o)
+                0x022e7c74                theTime
+ COMMON         0x022e7c78     0x2020 /opt/devkitPro/libnds/lib/libnds9.a(videoGL.o)
+                0x022e7c78                glGlobalData
+ COMMON         0x022e9c98     0x1214 /opt/devkitPro/libnds/lib/libnds9.a(fifosystem.o)
+                0x022e9c98                fifo_datamsg_data
+                0x022e9cd8                fifo_buffer
+                0x022eacd8                fifo_value32_func
+                0x022ead18                fifo_address_func
+                0x022ead58                fifo_freelist_start
+                0x022ead5c                fifo_value32_data
+                0x022ead9c                fifo_sendwords_end
+                0x022eada0                fifo_rcvdwords_start
+                0x022eada4                fifo_channel_start
+                0x022eade4                fifo_sendwords_start
+                0x022eade8                fifo_address_data
+                0x022eae28                fifo_channel_end
+                0x022eae68                fifo_rcvdwords_end
+                0x022eae6c                fifo_datamsg_func
+ COMMON         0x022eaeac      0x148 /opt/devkitPro/libnds/lib/libnds9.a(background.o)
+                0x022eaeac                bgState
+                0x022eafec                bgIsTextLut
+ COMMON         0x022eaff4        0x4 /opt/devkitPro/devkitARM/lib/gcc/arm-eabi/4.3.3/../../../../arm-eabi/lib/thumb/libsysbase.a(times.o)
+                0x022eaff4                punixTime
+                0x022eaff8                . = ALIGN (0x4)
+                0x022eaff8                __bss_end = ABSOLUTE (.)
+                0x022eaff8                __bss_end__ = __bss_end
+                0x022eaff8                _end = __bss_end__
+                0x022eaff8                __end__ = __bss_end__
 
 .stab
  *(.stab)

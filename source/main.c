@@ -11,9 +11,10 @@
 
 int main(void) {
 
-	while(true){
+
 		init_game();
 		find_pair();
+	while(true){
 		reset_game_parameters();
 		configure_graphics_main(); //upper screen to show the user
 		wait_start();
